@@ -4,9 +4,9 @@ class ObjectHandlerServiceAlboOnLine extends ObjectHandlerServiceBase
 {
     function run()
     {
-        $this->fnData['albo_on_line_allowed_state_identifiers'] = 'getAllowedStateIdentifiers';
-        $this->fnData['albo_on_line_anonymous_allowed_state_identifiers'] = 'getAnonymousAllowedStateIdentifiers';
-        $this->fnData['albo_on_line_allowed_states'] = 'getAllowedStates';
+        $this->fnData['allowed_state_identifiers'] = 'getAllowedStateIdentifiers';
+        $this->fnData['anonymous_allowed_state_identifiers'] = 'getAnonymousAllowedStateIdentifiers';
+        $this->fnData['allowed_states'] = 'getAllowedStates';
     }
 
     protected function getAllowedStateIdentifiers()

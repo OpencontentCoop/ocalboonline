@@ -36,10 +36,13 @@ class OcAlboOnLineStates
             /** @var eZContentObjectState $state */
             foreach ($stateGroup->states() as $state) {
                 $identifier = $state->attribute('identifier');
-                foreach ($map as $old => $new) {
+                foreach ($map as $old => $new) {                    
                     $name = ucfirst(str_replace('_', ' ', $new));
 
                     if ($old == $identifier) {
+
+                        eZCLI::instance()->warning("$old => $new");
+
                         $state->setAttribute('identifier', $new);
                         $state->store();
 
