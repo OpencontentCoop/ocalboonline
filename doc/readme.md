@@ -51,32 +51,32 @@ Rules[]=determinazione|cambia_stato_per_data_archiviazione,cambia_stato_per_data
 
 Le seguenti definizioni di regole sono riutilizzabili per tutte le classi specificate in Rules:
 
-*La seguente regola impone: se lo stato è visibile e la data_archiviazione è maggiore di oggi alle ore 23:59:59 cambia lo stato in archiviato*
+*La seguente regola impone: se lo stato è visibile e la data_archiviazione è inferiore a oggi alle ore 23:59:59 cambia lo stato in archiviato*
 ``` 
 [ChangeStateRule-cambia_stato_per_data_archiviazione]
 CurrentState=albo_on_line.visibile
 DestinationState=albo_on_line.archiviato
 Conditions[]
-Conditions[]=data_archiviazione;gt;TODAY
+Conditions[]=data_archiviazione;lt;TODAY
 ``` 
 
-*La seguente regola impone: se lo stato è archiviato e la data_finepubblicazione è maggiore di oggi alle ore 23:59:59 cambia lo stato in riservato*
+*La seguente regola impone: se lo stato è archiviato e la data_finepubblicazione è inferiore a oggi alle ore 23:59:59 cambia lo stato in riservato*
 ``` 
 [ChangeStateRule-cambia_stato_per_data_finepubblicazione]
 CurrentState=albo_on_line.archiviato
 DestinationState=albo_on_line.riservato
 Conditions[]
-Conditions[]=data_finepubblicazione;gt;TODAY
+Conditions[]=data_finepubblicazione;lt;TODAY
 ``` 
 
 
-*La seguente regola impone: se lo stato è riservato e la data_finepubblicazione_trasparenza è maggiore di oggi alle ore 23:59:59 cambia lo stato in non_visibile*
+*La seguente regola impone: se lo stato è riservato e la data_finepubblicazione_trasparenza è inferiore a oggi alle ore 23:59:59 cambia lo stato in non_visibile*
 ``` 
 [ChangeStateRule-cambia_stato_per_data_finepubblicazione_trasparenza]
 CurrentState=albo_on_line.riservato
 DestinationState=albo_on_line.non_visibile
 Conditions[]
-Conditions[]=data_finepubblicazione_trasparenza;gt;TODAY
+Conditions[]=data_finepubblicazione_trasparenza;lt;TODAY
 ```
  
 ####Impostare le regole di change_section
