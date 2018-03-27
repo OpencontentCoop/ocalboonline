@@ -12,7 +12,14 @@
 	    {ezcss_require(array('dataTables.bootstrap.css','responsive.dataTables.min.css'))}
 
 		{def $fieldsParts = $fields|explode( '|' )}
-	    {def $index = 0}
+	    {def $index = 0
+    	  	 $group_by = false()}
+
+	  	{if $fieldsParts[0]|begins_with('group_by')}
+	    	{set $index = 1}
+	    	{def $groupParts = $fieldsParts[0]|explode(':')}
+	    	{set $group_by = $groupParts[1]}
+	    {/if}
 	    
 	    {def $class = api_class($fieldsParts[$index]|trim())}
 	    {set $index = $index|inc()}
@@ -45,19 +52,39 @@
 		      {/foreach}
 		    {/foreach}
 
-	        {def $query = concat($depth_query_part, " classes [",$class.identifier,"] subtree [",$current_node.node_id,"]")}        	        	       
+	        {def $query = concat($depth_query_part, " classes [",$class.identifier,"] subtree [",$current_node.node_id,"]")}
+
+	        {def $facet_buttons = array()}
+	        {if $group_by}            
+	            {def $facets_search = api_search(concat($query, ' limit 1 facets [', $group_by, '|alpha|100]'))}            
+	            
+	            {if is_set($facets_search.facets[0].data)}
+	                {foreach $facets_search.facets[0].data as $key => $value}
+	                    {if $group_by|ends_with('year____dt]')}
+	                        {set $key = $key|explode('-01-01T00:00:00Z')|implode('')}
+	                    {/if}
+	                    {set $facet_buttons = $facet_buttons|append($key)}
+	                {/foreach}
+	                {if or($group_by|eq('anno'), $group_by|ends_with('dt]'))}
+	                    {set $facet_buttons = $facet_buttons|reverse}
+	                {/if}
+	            {/if}
+	        {/if}
 		    
 		    {run-once}
 		    {literal}
 		    <style>.dataTables_wrapper .pagination .disabled{display: none !important;}</style>
 		    {/literal}
 		    {/run-once}
+
 		    <script type="text/javascript" language="javascript" class="init">
 		    	moment.locale('it');
 		    	$(document).ready(function () {ldelim}
 		    		$('#container-{$block.id}').alboOnLine({ldelim}
 					  "query": "{$query}",
-					  "url": "{'opendata/api/datatable/search'|ezurl(no,full)}/",					  
+					  "url": "{'opendata/api/datatable/search'|ezurl(no,full)}/",
+					  "searching": {if and(is_set($block.custom_attributes.show_search),$block.custom_attributes.show_search|eq('1'))}true{else}false{/if},
+					  "length": {if $block.custom_attributes.limit|ne('')}{$block.custom_attributes.limit}{else}10{/if},
 					  "columns": [
 			            {foreach $class_fields as $field}
 			              {def $title = $field.name[$currentLanguage]}
@@ -120,11 +147,25 @@
 					  $albo_on_line_handler.anonymous_allowed_state_identifiers|contains($state.identifier),
 					  and($albo_on_line_handler.anonymous_allowed_state_identifiers|contains($state.identifier)|not, $current_node.object.can_edit)
 					)}					
-						<a href="#" class="button{if $index|eq(0)} defaultbutton{/if}" data-state={$state.id}>{$state.current_translation.name|wash()}</a>										
+						<a href="#" class="button{if $index|eq(0)} defaultbutton{/if}" data-field="state" data-operator="in" data-value='["{$state.id}"]'>{$state.current_translation.name|wash()}</a>										
 					{/if}
 				{/foreach}
 	            </div>
 	            {undef $albo_on_line_handler}
+
+	            {if count($facet_buttons)|gt(0)}
+	            <div class="state-navigation" style="font-size: .875em;">
+	            {foreach $facet_buttons as $index => $facet_button}
+	                <a class="button{if $index|eq(0)} defaultbutton{/if}" 
+    				   {if $group_by|ends_with('year____dt]')}
+    				   data-field="{$group_by}" data-operator="range" data-value='["{concat($facet_button,'-01-01T00:00:00Z')}","{concat($facet_button,'-12-31T23:59:00Z')}"]'
+    				   {else}
+    				   data-field="{$group_by}" data-operator="in" data-value='["{$facet_button}"]'
+    				   {/if}
+					   href="#">{$facet_button|wash()}</a>
+	            {/foreach}
+	            </div>
+	            {/if}
 
 	            <div class="table-container"></div>
 	            

@@ -44,32 +44,37 @@ moment.locale('it');
 							}
 						},
 						"order": [[ 0, 'desc' ]],
+						"pageLength": settings.length,
 						"lengthChange": false,
-						"searching": false,
+						"searching": settings.searching,
 						"ajax": {url: settings.url},						
 						"columns": settings.columns,
 						"columnDefs": settings.columnDefs
 					}
 				}).data('opendataDataTable');
-
-				var currentFilterName = 'state';
-				var setCurrentFilter = function(){
-				  	var currentFilterValue = $this.find('.state-navigation .defaultbutton').data('state');
-				  	fieldsDatatable.settings.builder.filters[currentFilterName] = {
-				    	'field': currentFilterName,				    
-				    	'operator': 'in',
-				    	'value': [currentFilterValue]				    
-				  	};
+				
+				var setCurrentFilters = function(){
+				  	$this.find('.state-navigation').each(function(){
+						var currentFilterName = $(this).find('.defaultbutton').data('field');
+						var currentFilterOperator = $(this).find('.defaultbutton').data('operator');
+						var currentFilterValue = $(this).find('.defaultbutton').data('value');
+					  	fieldsDatatable.settings.builder.filters[currentFilterName] = {
+					    	'field': currentFilterName,				    
+					    	'operator': currentFilterOperator,
+					    	'value': currentFilterValue
+					  	};
+				  	});
+				  	console.log(fieldsDatatable.settings.builder.filters);
 				};          
-				setCurrentFilter();
+				setCurrentFilters();
 
 				$this.find('.state-navigation .defaultbutton').on('click', function(e){
 	            	e.preventDefault();
 		        });
 				$this.find('.state-navigation .button').on('click', function(e){
-					$this.find('.state-navigation .defaultbutton').removeClass('defaultbutton');
+					$(this).parent().find('.defaultbutton').removeClass('defaultbutton');
 					$(this).addClass('defaultbutton');
-					setCurrentFilter();
+					setCurrentFilters();
 					fieldsDatatable.loadDataTable();
 					e.preventDefault();
 				});		        
