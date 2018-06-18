@@ -4,6 +4,8 @@ class OcAlboOnLineStates
 {
     const GROUP = 'albo_on_line';
 
+    const STATE_IN_ATTESA_DI_PUBBLICAZIONE = 'in_attesa_di_pubblicazione';
+
     const STATE_IN_PUBBLICAZIONE = 'in_pubblicazione';
 
     const STATE_ARCHIVIATO = 'archiviato';
@@ -28,7 +30,8 @@ class OcAlboOnLineStates
             'archivioricercabile' => self::STATE_ARCHIVIATO,
             'archiviononricercabile' => self::STATE_RISERVATO,
             'nonvisibile' => self::STATE_NON_VISIBILE,
-            'annullato' => self::STATE_ANNULLATO
+            'annullato' => self::STATE_ANNULLATO,
+            'pending' => self::STATE_IN_ATTESA_DI_PUBBLICAZIONE,
         );
 
         $stateGroup = eZContentObjectStateGroup::fetchByIdentifier('albotelematico');
@@ -70,11 +73,17 @@ class OcAlboOnLineStates
     public static function getStates()
     {
         if (self::$states === null) {
-            self::$states = array();
-            $stateGroup = eZContentObjectStateGroup::fetchByIdentifier(self::GROUP);
-            if ($stateGroup instanceof eZContentObjectStateGroup) {
-                self::$states = $stateGroup->states();
-            }
+            self::$states = OpenPABase::initStateGroup(
+                self::GROUP,
+                array(
+                    self::STATE_IN_PUBBLICAZIONE => 'In pubblicazione',
+                    self::STATE_ARCHIVIATO => 'Archiviato',
+                    self::STATE_RISERVATO => 'Riservato',
+                    self::STATE_NON_VISIBILE => 'Non visibile',
+                    self::STATE_ANNULLATO => 'Annullato',
+                    self::STATE_IN_ATTESA_DI_PUBBLICAZIONE => 'In attesa di pubblicazione',  
+                )
+            );
         }
 
         return self::$states;

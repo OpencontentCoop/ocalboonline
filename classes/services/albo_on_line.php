@@ -7,6 +7,7 @@ class ObjectHandlerServiceAlboOnLine extends ObjectHandlerServiceBase
         $this->fnData['allowed_state_identifiers'] = 'getAllowedStateIdentifiers';
         $this->fnData['anonymous_allowed_state_identifiers'] = 'getAnonymousAllowedStateIdentifiers';
         $this->fnData['allowed_states'] = 'getAllowedStates';
+        $this->fnData['states'] = 'getStates';
     }
 
     protected function getAllowedStateIdentifiers()
@@ -30,6 +31,11 @@ class ObjectHandlerServiceAlboOnLine extends ObjectHandlerServiceBase
         }
 
         return $result;
+    }
+
+    protected function getStates()
+    {
+        return OcAlboOnLineStates::getStates();
     }
 
 }

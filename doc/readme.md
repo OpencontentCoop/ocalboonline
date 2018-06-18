@@ -24,6 +24,12 @@ Come si distingue dall'albo telematico?
 
 Normale attivazione dell'estensione (in tutti i siteaccess del sito)
 
+Nei site.ini definire l'estensione PRIMA di openpa_designitalia in modo da poterne utilizzare i template customizzati di amministrazione trasparente
+```bash 
+ActiveAccessExtensions[]=ocalboonline
+ActiveAccessExtensions[]=openpa_designitalia
+```
+
 ###Migrare i nome degli stati dall'albo telematico trentino se necessario con: 
  
 ```bash 
