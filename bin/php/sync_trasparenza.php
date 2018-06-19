@@ -12,21 +12,10 @@ $script->initialize();
 $script->setUseDebugAccumulators(true);
 
 $rootRemoteNodeId = 23830;
-$remoteUrl = 'https://vallarsa.upipa.opencontent.it';
+$remoteUrl = 'http://vallarsa.upipa-dev.opencontent.it';
 
-// $db = eZDB::instance();
-// $nodeID = 3245;
-// $query = "SELECT co.*, con.name as name, con.real_translation, cot.node_id
-//              FROM ezcontentobject co
-//              JOIN ezcontentobject_tree cot ON co.id = cot.contentobject_id AND co.current_version = cot.contentobject_version
-//              JOIN ezcontentobject_name con ON co.id = con.contentobject_id AND co.current_version = con.content_version
-//              WHERE " .
-//                 $db->generateSQLINStatement( $nodeID, 'cot.node_id', false, true, 'int' ) . " AND " .
-//                 eZContentLanguage::sqlFilter( 'con', 'co' );
-// print_r($query);
-// die();
-// $resArray = $db->arrayQuery($query);
-
+OpenPAClassTools::$remoteUrl = 'http://vallarsa.upipa-dev.opencontent.it/openpa/classdefinition/';
+eZINI::instance('openpa.ini')->setVariable('NetworkSettings', 'PrototypeUrl', OpenPAClassTools::$remoteUrl);
 
 try {
 
@@ -59,12 +48,12 @@ try {
         'trasparenza',
     );
 
-	// foreach( $classiTrasparenza as $identifier )
-	// {
-	//     OpenPALog::warning( 'Sincronizzo classe ' . $identifier );
-	//     $tools = new OpenPAClassTools( $identifier, true ); // creo se non esiste
-	//     $tools->sync( true, true ); // forzo e rimuovo attributi in più
-	// }
+	foreach( $classiTrasparenza as $identifier )
+	{
+	    OpenPALog::warning( 'Sincronizzo classe ' . $identifier );
+	    $tools = new OpenPAClassTools( $identifier, true ); // creo se non esiste
+	    $tools->sync( true, true ); // forzo e rimuovo attributi in più
+	}
 
     $sourceClient = new HttpClient($remoteUrl);
     $tool = new SyncTrasparenzaTool(

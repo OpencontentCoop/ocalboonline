@@ -8,20 +8,22 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
         $remoteBroseItem,
         $remoteContent,
         $localCurrentParentNodeId,
-        $localContent,
-        $priority
+        $localContent
     )
     {
         try {            
 
-            $this->syncContent($remoteContent, $localCurrentParentNodeId);
+            if ($this->needSyncContent($remoteContent, $localContent)){
+                $this->syncContent($remoteContent, $localCurrentParentNodeId);
+            }
             
             $mainNode = eZContentObjectTreeNode::fetch($localContent['metadata']['mainNodeId']);
             if (!$mainNode instanceof eZContentObjectTreeNode) {
                 throw new Exception("Main node " . $localContent['metadata']['mainNodeId'] . " of content with remote " . $localContent['metadata']['remoteId'] . " not found");
             }
-            $this->syncPriority($mainNode, $localCurrentParentNodeId, $priority);
+            
             $this->syncLocation($mainNode, $remoteBroseItem);
+            $this->syncPriority($mainNode, $localCurrentParentNodeId, $remoteBroseItem);            
       
         } catch (Exception $e) {
             $this->currentLog->appendError($e->getMessage());
@@ -32,8 +34,7 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
     protected function onLocalNotFound(
         $remoteBroseItem,
         $remoteContent,
-        $localCurrentParentNodeId,
-        $priority
+        $localCurrentParentNodeId
     )
     {
         try {
@@ -43,8 +44,9 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
             if (!$mainNode instanceof eZContentObjectTreeNode) {
                 throw new Exception("Main node " . $localContent['metadata']['mainNodeId'] . " of content with remote " . $localContent['metadata']['remoteId'] . " not found");
             }
-            $this->syncPriority($mainNode, $localCurrentParentNodeId, $priority);
+            
             $this->syncLocation($mainNode, $remoteBroseItem);
+            $this->syncPriority($mainNode, $localCurrentParentNodeId, $remoteBroseItem);
             
             $this->currentLog->write();
 
@@ -75,29 +77,65 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
         }
     }
 
-    private function syncPriority(eZContentObjectTreeNode $mainNode, $localCurrentParentNodeId, $priority)
+    private function syncPriority(eZContentObjectTreeNode $mainNode, $localCurrentParentNodeId, $remoteBroseItem)
     {
         try {
-            if ($mainNode->attribute('priority') != $priority) {
+            
+            $mainNode->setAttribute('sort_field', $remoteBroseItem['sortField']);
+            $mainNode->setAttribute('sort_order', $remoteBroseItem['sortOrder']);
+            $mainNode->store();
+
+            if ($mainNode->attribute('priority') != $remoteBroseItem['priority']) {
+                $priority = $remoteBroseItem['priority'];
                 $nodeID = $mainNode->attribute('node_id');
-                $this->currentLog->appendWarning("Sync-priority");
+                
                 $db = eZDB::instance();
-                $db->begin();
+                $db->begin();                
+
                 $db->query("UPDATE ezcontentobject_tree SET priority={$priority} WHERE node_id={$nodeID} AND parent_node_id={$localCurrentParentNodeId}");
                 $db->commit();
-            }
 
-            $db = eZDB::instance();
-            $db->begin();
-            $mainNode->setAttribute('sort_field', eZContentObjectTreeNode::SORT_FIELD_PRIORITY);
-            $mainNode->setAttribute('sort_order', eZContentObjectTreeNode::SORT_ORDER_ASC);
-            $mainNode->store();
-            $db->commit();
+                $this->currentLog->appendWarning("Sync-priority from " . $mainNode->attribute('priority') . " to $priority");
+
+            }
 
         } catch (Exception $e) {
             $this->currentLog->appendError($e->getMessage());
         }
 
+    }
+
+    private function needSyncContent($remoteContent, $localContent)
+    {
+        $remoteData = $remoteContent['data']['ita-IT'];
+        $localData = $localContent['data']['ita-IT'];
+
+        foreach ($remoteData as $key => $remoteValue) {
+            if ($key == 'referente'){
+                continue;
+            }
+            $localValue = $localData[$key];
+            if ($this->hasDiff($remoteValue, $localValue)){
+                $this->currentLog->appendWarning("Diff in $key");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function hasDiff($remoteValue, $localValue)
+    {
+        if (is_string($remoteValue)){
+            return strip_tags($remoteValue) != strip_tags($localValue);
+        }else{            
+            foreach ($remoteValue as $key => $value) {
+                if ($this->hasDiff($value, $localValue[$key])){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

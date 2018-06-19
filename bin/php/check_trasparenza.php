@@ -12,7 +12,7 @@ $script->initialize();
 $script->setUseDebugAccumulators(true);
 
 $rootRemoteNodeId = 23830;
-$remoteUrl = 'https://vallarsa.upipa.opencontent.it';
+$remoteUrl = 'http://vallarsa.upipa-dev.opencontent.it';
 
 try {
 

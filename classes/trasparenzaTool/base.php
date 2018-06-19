@@ -92,7 +92,7 @@ abstract class BaseTrasparenzaTool
         return self::$readItems[$remoteId];
     }
 
-    protected function walkTree($remoteRootNodeId, $localCurrentParentNodeId, $priority = 0)
+    protected function walkTree($remoteRootNodeId, $localCurrentParentNodeId)
     {
         $this->currentLog = new LogLine(self::$level);
         $remoteBroseItem = $this->browse($remoteRootNodeId);
@@ -106,8 +106,7 @@ abstract class BaseTrasparenzaTool
                 $remoteBroseItem,
                 $remoteContent,
                 $localCurrentParentNodeId,
-                $localContent,
-                $priority
+                $localContent
             );
 
             $this->currentLog->write();
@@ -120,8 +119,7 @@ abstract class BaseTrasparenzaTool
                 $this->onLocalNotFound(
                     $remoteBroseItem,
                     $remoteContent,
-                    $localCurrentParentNodeId,
-                    $priority
+                    $localCurrentParentNodeId
                 );
             }else{
                 $this->currentLog->appendError($e->getMessage())->write();
@@ -133,15 +131,13 @@ abstract class BaseTrasparenzaTool
         $remoteBroseItem,
         $remoteContent,
         $localCurrentParentNodeId,
-        $localContent,
-        $priority
+        $localContent
     );
 
     abstract protected function onLocalNotFound(
         $remoteBroseItem,
         $remoteContent,
-        $localCurrentParentNodeId,
-        $priority
+        $localCurrentParentNodeId
     );
 
     protected static function moveChildren(eZContentObject $object, $parentFrom, $parentTo)
