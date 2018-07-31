@@ -1,4 +1,4 @@
-<fieldset class="Form-field{if $attribute.has_validation_error} has-error{/if}">
+<fieldset class="Form-field{if $attribute.has_validation_error} has-error{/if} {$attribute.contentclass_attribute_identifier}">
     <legend class="Form-label {if $attribute.is_required}is-required{/if}">
         {first_set( $contentclass_attribute.nameList[$content_language], $contentclass_attribute.name )|wash}
         {if $attribute.is_information_collector} <em
@@ -9,29 +9,6 @@
     {if $contentclass_attribute.description}
         <em class="attribute-description">{first_set( $contentclass_attribute.descriptionList[$content_language], $contentclass_attribute.description)|wash}</em>
     {/if}
-
-    {def $base = ezini('eZJSCore', 'LocalScriptBasePath', 'ezjscore.ini')}
-    {ezscript_require( 'ezjsc::yui2' )}
-    {ezcss_require( concat( '/', $base.yui2, 'calendar/assets/calendar.css' ) )}
-
-    <script type="text/javascript">
-        (function () {ldelim}
-            YUILoader.addModule({ldelim}
-                name: 'datepicker',
-                type: 'js',
-                fullpath: '{"javascript/ezdatepicker.js"|ezdesign( 'no' )}',
-                requires: ["calendar"],
-                after: ["calendar"],
-                skinnable: false
-                {rdelim});
-
-            YUILoader.require(["datepicker"]);
-
-            // Load the files using the insert() method.
-            var options = [];
-            YUILoader.insert(options, "js");
-            {rdelim})();
-    </script>
 
     {default attribute_base='ContentObjectAttribute' html_class='full' placeholder=false()}
         <div class="clearfix">
@@ -46,29 +23,26 @@
             <div class="u-flex">
                 <div class="FlexItem">
                     <input placeholder="{'Day'|i18n( 'design/admin/content/datatype' )}" id="{$id_base}_day"
-                           class="Form-input" type="text" name="{$attribute_base}_date_day_{$attribute.id}" size="3"
-                           value="{section show=$attribute.content.is_valid}{$attribute.content.day}{/section}"/>
+                           class="Form-input day" type="text" name="{$attribute_base}_date_day_{$attribute.id}" size="3"
+                           disabled="disabled"                           
+                           value="{if $attribute.content.is_valid}{$attribute.content.day}{else}{currentdate()|datetime( 'custom', '%d' )}{/if}"/>
                 </div>
                 <div class="FlexItem">
                     <input placeholder="{'Month'|i18n( 'design/admin/content/datatype' )}" id="{$id_base}_month"
-                           class="Form-input" type="text" name="{$attribute_base}_date_month_{$attribute.id}" size="3"
-                           value="{section show=$attribute.content.is_valid}{$attribute.content.month}{/section}"/>
+                           class="Form-input month" type="text" name="{$attribute_base}_date_month_{$attribute.id}" size="3"
+                           disabled="disabled"
+                           value="{if $attribute.content.is_valid}{$attribute.content.month}{else}{currentdate()|datetime( 'custom', '%m' )}{/if}"/>                           
                 </div>
                 <div class="FlexItem">
                     <input placeholder="{'Year'|i18n( 'design/admin/content/datatype' )}" id="{$id_base}_year"
                            class="year Form-input" type="text" name="{$attribute_base}_date_year_{$attribute.id}"
                            size="5"
-                           value="{section show=$attribute.content.is_valid}{$attribute.content.year}{/section}"/>
+                           disabled="disabled"
+                           value="{if $attribute.content.is_valid}{$attribute.content.year}{else}{currentdate()|datetime( 'custom', '%Y' )}{/if}"/>
+                           
                 </div>
-                <div class="FlexItem">
-                    <span class="u-padding-all-s fa fa-calendar" id="{$attribute_base}_date_cal_{$attribute.id}"
-                          onclick="showDatePicker( '{$attribute_base}', '{$attribute.id}', 'date' );"
-                          style="cursor: pointer;"></span>
-                </div>
+
             </div>
-
-            <div id="{$attribute_base}_date_cal_container_{$attribute.id}" style="display: none; position: absolute;"></div>
-
 
         </div>
     {/default}
