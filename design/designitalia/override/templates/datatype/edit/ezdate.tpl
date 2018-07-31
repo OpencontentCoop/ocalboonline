@@ -82,9 +82,9 @@
         <select id="tipo_archiviazione"
                 class="Form-input"
                 name="tipo_archiviazione">                
-                <option value="riservato">Area riservata</option>
+                <option value="riservato">Archivio riservato</option>
                 <option value="archiviato">Archivio pubblico</option>                
-                <option value="custom">Imposta manualmente le date di archiviazione e fine pubblicazione</option>
+                <option value="custom">Imposta manualmente</option>
         </select>
     </div>
 {/if}

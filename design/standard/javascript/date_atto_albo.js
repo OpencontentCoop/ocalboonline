@@ -13,24 +13,43 @@ $(document).ready(function(){
 			setDate('data_esecutivita', getDate('data_iniziopubblicazione').add(10, 'd')); 
 			setDate('data_efficacia', getDate('data_iniziopubblicazione').add(10, 'd')); 
 		}
+
+		readonlyDate('data_esecutivita');
+		readonlyDate('data_efficacia');
 	};
 
 	var setArchiviazione = function(value){		
 		if(value == 'riservato'){
 			setDate('data_finepubblicazione', getDate('data_iniziopubblicazione').add(10, 'd')); 	
+			enableDate('data_finepubblicazione');
+			readonlyDate('data_finepubblicazione');
+
 			setDate('data_archiviazione', null); 	
+			disableDate('data_archiviazione');
+			
 			// closeDateAttributeGroup();
 		}
 
 		if(value == 'archiviato'){
 			setDate('data_archiviazione', getDate('data_iniziopubblicazione').add(10, 'd')); 	
+			enableDate('data_archiviazione');
+			readonlyDate('data_archiviazione');
+
 			setDate('data_finepubblicazione', null); 	
+			disableDate('data_finepubblicazione');			
+			
 			// closeDateAttributeGroup();
 		}
 
 		if(value == 'custom'){
 			setDate('data_archiviazione', null); 	
+			enableDate('data_archiviazione');
+			notReadonlyDate('data_archiviazione');
+			
 			setDate('data_finepubblicazione', null); 	
+			enableDate('data_finepubblicazione');
+			notReadonlyDate('data_finepubblicazione');
+			
 			openDateAttributeGroup();			
 		}
 	}
@@ -44,6 +63,42 @@ $(document).ready(function(){
 		}
 		
 		return moment(day+"-"+month+"-"+year, "DD-MM-YYYY");
+	}
+
+	var disableDate = function(identifier){
+		var container = $('.'+identifier);
+		if (container.length > 0){
+			var day = container.find('.day').attr("disabled","disabled").css('cursor', 'not-allowed');
+			var month = container.find('.month').attr("disabled","disabled").css('cursor', 'not-allowed');
+			var year = container.find('.year').attr("disabled","disabled").css('cursor', 'not-allowed');
+		}
+	}
+
+	var enableDate = function(identifier){
+		var container = $('.'+identifier);
+		if (container.length > 0){
+			var day = container.find('.day').removeAttr("disabled").css('cursor', 'default');
+			var month = container.find('.month').removeAttr("disabled").css('cursor', 'default');
+			var year = container.find('.year').removeAttr("disabled").css('cursor', 'default');
+		}
+	}
+
+	var readonlyDate = function(identifier){
+		var container = $('.'+identifier);
+		if (container.length > 0){
+			var day = container.find('.day').attr("readonly","readonly").css('cursor', 'not-allowed');
+			var month = container.find('.month').attr("readonly","readonly").css('cursor', 'not-allowed');
+			var year = container.find('.year').attr("readonly","readonly").css('cursor', 'not-allowed');
+		}
+	}
+
+	var notReadonlyDate = function(identifier){
+		var container = $('.'+identifier);
+		if (container.length > 0){
+			var day = container.find('.day').removeAttr("readonly").css('cursor', 'default');
+			var month = container.find('.month').removeAttr("readonly").css('cursor', 'default');
+			var year = container.find('.year').removeAttr("readonly").css('cursor', 'default');
+		}
 	}
 
 	var setDate = function(identifier, date){
@@ -97,19 +152,23 @@ $(document).ready(function(){
 
 	if (isEmpty('data_esecutivita')){
 		setEsecutivita(esecutivita.val());
+	}else{
+		readonlyDate('data_esecutivita');
 	}
 	if (isEmpty('data_efficacia')){
 		setEsecutivita(esecutivita.val());
+	}else{
+		readonlyDate('data_efficacia');
 	}
 
 	if (isEmpty('data_archiviazione') && isEmpty('data_finepubblicazione')){
 		setArchiviazione(tipo_archiviazione.val());
 	}else if (isEmpty('data_archiviazione') && !isEmpty('data_finepubblicazione')){
-		tipo_archiviazione.val('riservato');
+		tipo_archiviazione.val('riservato').trigger('change');
 	}else if (isEmpty('data_finepubblicazione') && !isEmpty('data_archiviazione')){
-		tipo_archiviazione.val('archiviato');
+		tipo_archiviazione.val('archiviato').trigger('change');
 	}else{
-		tipo_archiviazione.val('custom');
+		tipo_archiviazione.val('custom').trigger('change');
 		openDateAttributeGroup();
 	}
 
@@ -117,4 +176,5 @@ $(document).ready(function(){
 		var anno_iniziopubblicazione = getDate('data_iniziopubblicazione').year();		
 		setDate('data_finepubblicazione_trasparenza', moment("31-12-"+(anno_iniziopubblicazione+5), "DD-MM-YYYY")); 
 	}
+
 });

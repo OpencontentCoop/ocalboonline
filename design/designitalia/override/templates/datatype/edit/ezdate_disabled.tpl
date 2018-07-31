@@ -24,20 +24,20 @@
                 <div class="FlexItem">
                     <input placeholder="{'Day'|i18n( 'design/admin/content/datatype' )}" id="{$id_base}_day"
                            class="Form-input day" type="text" name="{$attribute_base}_date_day_{$attribute.id}" size="3"
-                           readonly="readonly"
+                           readonly="readonly" style="cursor: not-allowed;"
                            value="{if $attribute.content.is_valid}{$attribute.content.day}{else}{currentdate()|datetime( 'custom', '%d' )}{/if}"/>
                 </div>
                 <div class="FlexItem">
                     <input placeholder="{'Month'|i18n( 'design/admin/content/datatype' )}" id="{$id_base}_month"
                            class="Form-input month" type="text" name="{$attribute_base}_date_month_{$attribute.id}" size="3"
-                           readonly="readonly"
+                           readonly="readonly" style="cursor: not-allowed;" 
                            value="{if $attribute.content.is_valid}{$attribute.content.month}{else}{currentdate()|datetime( 'custom', '%m' )}{/if}"/>                           
                 </div>
                 <div class="FlexItem">
                     <input placeholder="{'Year'|i18n( 'design/admin/content/datatype' )}" id="{$id_base}_year"
                            class="year Form-input" type="text" name="{$attribute_base}_date_year_{$attribute.id}"
                            size="5"
-                           readonly="readonly"
+                           readonly="readonly" style="cursor: not-allowed;"
                            value="{if $attribute.content.is_valid}{$attribute.content.year}{else}{currentdate()|datetime( 'custom', '%Y' )}{/if}"/>
                            
                 </div>
