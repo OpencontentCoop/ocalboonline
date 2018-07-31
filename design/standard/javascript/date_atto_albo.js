@@ -13,17 +13,24 @@ $(document).ready(function(){
 		}
 	};
 
-	var setArchiviazione = function(value){
-		console.log(value);
+	var setArchiviazione = function(value){		
 		if(value == 'riservato'){
 			setDate('data_finepubblicazione', getDate('data_iniziopubblicazione').add(10, 'd')); 	
 			setDate('data_archiviazione', null); 	
+			closeDateAttributeGroup();
 		}
 
 		if(value == 'archiviato'){
 			setDate('data_archiviazione', getDate('data_iniziopubblicazione').add(10, 'd')); 	
 			setDate('data_finepubblicazione', null); 	
-		}		
+			closeDateAttributeGroup();
+		}
+
+		if(value == 'custom'){
+			setDate('data_archiviazione', null); 	
+			setDate('data_finepubblicazione', null); 	
+			openDateAttributeGroup();			
+		}
 	}
 
 	var getDate = function(identifier){
@@ -63,6 +70,17 @@ $(document).ready(function(){
 		return ($.trim(day.val()).length + $.trim(month.val()).length + $.trim(year.val()).length) === 0;		
 	};
 
+	var openDateAttributeGroup = function(){		
+		if ($('#accordion-panel-date').css('height') == "0px"){
+			$('h2#accordion-header-date').trigger('click');
+		}
+	}
+	var closeDateAttributeGroup = function(){		
+		if ($('#accordion-panel-date').css('height') != "0px"){
+			$('h2#accordion-header-date').trigger('click');
+		}
+	}
+
 	esecutivita.on('change', function(){
 		setEsecutivita($(this).val());
 	});
@@ -84,6 +102,7 @@ $(document).ready(function(){
 		tipo_archiviazione.val('archiviato');
 	}else{
 		tipo_archiviazione.val('custom');
+		openDateAttributeGroup();
 	}
 
 	if (isEmpty('data_finepubblicazione_trasparenza')){
