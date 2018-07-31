@@ -34,6 +34,12 @@ MatchFile=datatype/edit/ezdate.tpl
 Subdir=templates
 Match[attribute_identifier]=data_esecutivita
 
+[edit_ezdate_data_efficacia]
+Source=content/datatype/edit/ezdate.tpl
+MatchFile=datatype/edit/ezdate.tpl
+Subdir=templates
+Match[attribute_identifier]=data_efficacia
+
 [edit_ezdate_data_iniziopubblicazione]
 Source=content/datatype/edit/ezdate.tpl
 MatchFile=datatype/edit/ezdate_disabled.tpl
@@ -64,6 +70,26 @@ MatchFile=datatype/edit/esecutivita.tpl
 Subdir=templates
 Match[attribute_identifier]=esecutivita
 
+[edit_ezselection_anno]
+Source=content/datatype/edit/ezselection.tpl
+MatchFile=datatype/edit/anno.tpl
+Subdir=templates
+Match[attribute_identifier]=anno
+
+
+[edit_deliberazione_file]
+Source=content/datatype/edit/ezbinaryfile.tpl
+MatchFile=datatype/edit/file_first_version.tpl
+Subdir=templates
+Match[class_identifier]=deliberazione
+Match[attribute_identifier]=file
+
+[edit_determinazione_testo]
+Source=content/datatype/edit/ocmultibinary.tpl
+MatchFile=datatype/edit/multifile_first_version.tpl
+Subdir=templates
+Match[class_identifier]=determinazione
+Match[attribute_identifier]=allegati
 
 
 */

@@ -8,8 +8,10 @@ $(document).ready(function(){
 	var setEsecutivita = function(value){
 		if (value == 1){
 			setDate('data_esecutivita', getDate('data')); 
+			setDate('data_efficacia', getDate('data')); 
 		}else{
 			setDate('data_esecutivita', getDate('data_iniziopubblicazione').add(10, 'd')); 
+			setDate('data_efficacia', getDate('data_iniziopubblicazione').add(10, 'd')); 
 		}
 	};
 
@@ -35,39 +37,42 @@ $(document).ready(function(){
 
 	var getDate = function(identifier){
 		var container = $('.'+identifier);
-		
-		var day = container.find('.day').val();
-		var month = container.find('.month').val();
-		var year = container.find('.year').val();
+		if (container.length > 0){
+			var day = container.find('.day').val();
+			var month = container.find('.month').val();
+			var year = container.find('.year').val();
+		}
 		
 		return moment(day+"-"+month+"-"+year, "DD-MM-YYYY");
 	}
 
 	var setDate = function(identifier, date){
 		var container = $('.'+identifier);
-		
-		var day = container.find('.day');
-		var month = container.find('.month');
-		var year = container.find('.year');
-		
-		if (date){
-			day.val(date.format('DD'));
-			month.val(date.format('MM'));
-			year.val(date.format('YYYY'));
-		}else{
-			day.val('');
-			month.val('');
-			year.val('');
+		if (container.length > 0){
+			var day = container.find('.day');
+			var month = container.find('.month');
+			var year = container.find('.year');
+			
+			if (date){
+				day.val(date.format('DD'));
+				month.val(date.format('MM'));
+				year.val(date.format('YYYY'));
+			}else{
+				day.val('');
+				month.val('');
+				year.val('');
+			}
 		}
 	};
 
 	var isEmpty = function(identifier){
 		var container = $('.'+identifier);
-		
-		var day = container.find('.day');
-		var month = container.find('.month');
-		var year = container.find('.year');		
-		return ($.trim(day.val()).length + $.trim(month.val()).length + $.trim(year.val()).length) === 0;		
+		if (container.length > 0){
+			var day = container.find('.day');
+			var month = container.find('.month');
+			var year = container.find('.year');		
+			return ($.trim(day.val()).length + $.trim(month.val()).length + $.trim(year.val()).length) === 0;		
+		}
 	};
 
 	var openDateAttributeGroup = function(){		
@@ -91,6 +96,9 @@ $(document).ready(function(){
 
 
 	if (isEmpty('data_esecutivita')){
+		setEsecutivita(esecutivita.val());
+	}
+	if (isEmpty('data_efficacia')){
 		setEsecutivita(esecutivita.val());
 	}
 
