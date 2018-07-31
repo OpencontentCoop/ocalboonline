@@ -28,14 +28,3 @@
 {/let}
 {/default}
 {ezscript_require( array('ezjsc::jquery', 'moment-with-locales.min.js', 'date_atto_albo.js') )}
-    <div class="Form-field tipo_archiviazione">        
-        <label class="Form-label" for="tipo_archiviazione">Tipologia di archiviazione</label>
-
-        <select id="tipo_archiviazione"
-                class="Form-input"
-                name="tipo_archiviazione">                
-                <option value="riservato">Area riservata</option>
-                <option value="archiviato">Archivio pubblico</option>                
-                <option value="custom">Imposta manualmente le date di archiviazione e fine pubblicazione</option>
-        </select>
-    </div>

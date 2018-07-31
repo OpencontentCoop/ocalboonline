@@ -6,10 +6,10 @@ $(document).ready(function(){
 	var tipo_archiviazione = $('.tipo_archiviazione').find('select');
 	
 	var setEsecutivita = function(value){
-		if (value == 1){
+		if (value === '1'){
 			setDate('data_esecutivita', getDate('data')); 
 			setDate('data_efficacia', getDate('data')); 
-		}else{
+		}else if (value === '0'){
 			setDate('data_esecutivita', getDate('data_iniziopubblicazione').add(10, 'd')); 
 			setDate('data_efficacia', getDate('data_iniziopubblicazione').add(10, 'd')); 
 		}
@@ -19,13 +19,13 @@ $(document).ready(function(){
 		if(value == 'riservato'){
 			setDate('data_finepubblicazione', getDate('data_iniziopubblicazione').add(10, 'd')); 	
 			setDate('data_archiviazione', null); 	
-			closeDateAttributeGroup();
+			// closeDateAttributeGroup();
 		}
 
 		if(value == 'archiviato'){
 			setDate('data_archiviazione', getDate('data_iniziopubblicazione').add(10, 'd')); 	
 			setDate('data_finepubblicazione', null); 	
-			closeDateAttributeGroup();
+			// closeDateAttributeGroup();
 		}
 
 		if(value == 'custom'){

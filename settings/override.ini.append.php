@@ -64,6 +64,20 @@ MatchFile=datatype/edit/ezdate.tpl
 Subdir=templates
 Match[attribute_identifier]=data_finepubblicazione_trasparenza
 
+[edit_ezdate_data_inizio_validita_bando]
+Source=content/datatype/edit/ezdate.tpl
+MatchFile=datatype/edit/ezdate.tpl
+Subdir=templates
+Match[class_identifier]=bando
+Match[attribute_identifier]=data_inizio_validita
+
+[edit_ezdate_data_inizio_validita_concorso]
+Source=content/datatype/edit/ezdate.tpl
+MatchFile=datatype/edit/ezdate.tpl
+Subdir=templates
+Match[class_identifier]=concorso
+Match[attribute_identifier]=data_inizio_validita
+
 [edit_ezselection_esecutivita]
 Source=content/datatype/edit/ezselection.tpl
 MatchFile=datatype/edit/esecutivita.tpl
