@@ -52,6 +52,27 @@ if ($http->hasGetVariable('remote-read')){
 	eZExecution::cleanExit();
 }
 
+if ($http->hasGetVariable('remote-count')){
+	$remoteUrl = $http->getVariable('remote');
+	$subtree = $http->getVariable('subtree');
+	$sourceClient = new HttpClient($remoteUrl);
+	try{
+		$data = $sourceClient->find("classes ['pagina_trasparenza'] subtree [$subtree] limit 1");
+	}catch(Exception $e){
+		$data = ['error' => $e->getMessage()];
+	}
+
+	if ($http->hasGetVariable('debug')){
+		echo '<pre>';
+		print_r($data);
+		eZDisplayDebug();
+	}else{
+		header('Content-Type: application/json');
+		echo json_encode( $data );	
+	}
+	eZExecution::cleanExit();
+}
+
 if ($http->hasGetVariable('local-read')){
 	$repository = new ContentRepository();
     $repository->setCurrentEnvironmentSettings(new DefaultEnvironmentSettings());

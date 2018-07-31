@@ -21,9 +21,9 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
             if (!$mainNode instanceof eZContentObjectTreeNode) {
                 throw new Exception("Main node " . $localContent['metadata']['mainNodeId'] . " of content with remote " . $localContent['metadata']['remoteId'] . " not found");
             }
-            
-            $this->syncLocation($mainNode, $remoteBroseItem);
+                        
             $this->syncPriority($mainNode, $localCurrentParentNodeId, $remoteBroseItem);            
+            $this->syncLocation($mainNode, $remoteBroseItem);
       
         } catch (Exception $e) {
             $this->currentLog->appendError($e->getMessage());

@@ -27,7 +27,7 @@
 )}
 {def $classes = fetch(class, list, hash('class_filter', $class_identifiers))}
 {def $first_year = api_search(concat('classes [', $class_identifiers|implode("','"), '] sort [anno=>asc] limit 1')).searchHits[0].data['ita-IT'].anno}
-{if $first_year|eq(null)}
+{if or($first_year|eq(null), $first_year|lt(2010))}
 	{set $first_year = 2015}
 {elseif is_array($first_year)}
 	{set $first_year = $first_year[0]}
@@ -202,7 +202,7 @@ $(document).ready(function () {
             				}
             			});            			
             			var states = $.grep(AlboStates, function(e){ return prefix+e.identifier == state; });            			
-            			var value = states.length > 0 ? states[0].name : state.replace(prefix, '');
+            			var value = states.length > 0 ? states[0].name : state ? state.replace(prefix, '') : '';
             			return '<small style="white-space:nowrap">'+value+'</small>';
             		},
             		"targets": [6]
