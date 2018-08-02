@@ -71,6 +71,7 @@ $(document).ready(function(){
 			var day = container.find('.day').attr("disabled","disabled").css('cursor', 'not-allowed');
 			var month = container.find('.month').attr("disabled","disabled").css('cursor', 'not-allowed');
 			var year = container.find('.year').attr("disabled","disabled").css('cursor', 'not-allowed');
+			container.find('.fa-calendar').hide();
 		}
 	}
 
@@ -80,6 +81,7 @@ $(document).ready(function(){
 			var day = container.find('.day').removeAttr("disabled").css('cursor', 'default');
 			var month = container.find('.month').removeAttr("disabled").css('cursor', 'default');
 			var year = container.find('.year').removeAttr("disabled").css('cursor', 'default');
+			container.find('.fa-calendar').show();
 		}
 	}
 
@@ -89,6 +91,7 @@ $(document).ready(function(){
 			var day = container.find('.day').attr("readonly","readonly").css('cursor', 'not-allowed');
 			var month = container.find('.month').attr("readonly","readonly").css('cursor', 'not-allowed');
 			var year = container.find('.year').attr("readonly","readonly").css('cursor', 'not-allowed');
+			container.find('.fa-calendar').hide();
 		}
 	}
 
@@ -97,7 +100,8 @@ $(document).ready(function(){
 		if (container.length > 0){
 			var day = container.find('.day').removeAttr("readonly").css('cursor', 'default');
 			var month = container.find('.month').removeAttr("readonly").css('cursor', 'default');
-			var year = container.find('.year').removeAttr("readonly").css('cursor', 'default');
+			var year = container.find('.year').removeAttr("readonly").css('cursor', 'default')
+			container.find('.fa-calendar').show();
 		}
 	}
 
@@ -140,6 +144,20 @@ $(document).ready(function(){
 			$('h2#accordion-header-date').trigger('click');
 		}
 	}
+
+	var onModifyData = function(){
+		setEsecutivita(esecutivita.val());
+	};
+
+	$('.data').find('.day').on('change', function(){
+		onModifyData();
+	});
+	$('.data').find('.month').on('change', function(){
+		onModifyData();
+	});
+	$('.data').find('.year').on('change', function(){
+		onModifyData();
+	});
 
 	esecutivita.on('change', function(){
 		setEsecutivita($(this).val());
