@@ -10,8 +10,8 @@ $(document).ready(function(){
 			setDate('data_esecutivita', getDate('data')); 
 			setDate('data_efficacia', getDate('data')); 
 		}else if (value === '0'){
-			setDate('data_esecutivita', getDate('data_iniziopubblicazione').add(10, 'd')); 
-			setDate('data_efficacia', getDate('data_iniziopubblicazione').add(10, 'd')); 
+			setDate('data_esecutivita', getDate('data_iniziopubblicazione').add(11, 'd')); 
+			setDate('data_efficacia', getDate('data_iniziopubblicazione').add(11, 'd')); 
 		}
 
 		readonlyDate('data_esecutivita');
