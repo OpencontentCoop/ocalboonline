@@ -129,6 +129,7 @@
     				   data-field="{$facet_button.field}" 
     				   data-operator="{$facet_button.operator}" 
     				   data-value='{$facet_button.value}'    				   
+    				   data-facet_value='{$facet_button.facet_value}'    				   
 					   href="#">
 						{$facet_button.name|wash()}
 					</a>

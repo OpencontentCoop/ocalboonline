@@ -207,6 +207,7 @@ class BlockHandlerAlboOnLine extends OpenPABlockHandler
                     'field' => $groupBy,
                     'operator' => (strpos($groupBy, 'year____dt') !== false) ? 'range' : 'in',
                     'value' => (strpos($groupBy, 'year____dt') !== false) ? "[\"{$facet}-01-01T00:00:00Z\",\"{$facet}-12-31T23:59:00Z\"]" : "[\"{$facet}\"]",
+                    'facet_value' => $facet,
                     'name' => $facet
                 );
             }
