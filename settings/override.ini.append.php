@@ -78,6 +78,20 @@ Subdir=templates
 Match[class_identifier]=concorso
 Match[attribute_identifier]=data_inizio_validita
 
+[edit_ezdate_data_fine_validita_bando]
+Source=content/datatype/edit/ezdatetime.tpl
+MatchFile=datatype/edit/ezdatetime.tpl
+Subdir=templates
+Match[class_identifier]=bando
+Match[attribute_identifier]=data_fine_validita
+
+[edit_ezdate_data_fine_validita_concorso]
+Source=content/datatype/edit/ezdatetime.tpl
+MatchFile=datatype/edit/ezdatetime.tpl
+Subdir=templates
+Match[class_identifier]=concorso
+Match[attribute_identifier]=data_fine_validita
+
 [edit_ezselection_esecutivita]
 Source=content/datatype/edit/ezselection.tpl
 MatchFile=datatype/edit/esecutivita.tpl

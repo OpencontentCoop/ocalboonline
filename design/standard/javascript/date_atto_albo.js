@@ -4,14 +4,17 @@ $(document).ready(function(){
 	var esecutivita = $('.esecutivita').find('select');
 
 	var tipo_archiviazione = $('.tipo_archiviazione').find('select');
+
+	var isBandoOConcorso = $('.data_fine_validita').length > 0;
 	
 	var setEsecutivita = function(value){
+		var setDateValue = getDate('data_iniziopubblicazione').add(11, 'd');		
 		if (value === '1'){
 			setDate('data_esecutivita', getDate('data')); 
 			setDate('data_efficacia', getDate('data')); 
 		}else if (value === '0'){
-			setDate('data_esecutivita', getDate('data_iniziopubblicazione').add(11, 'd')); 
-			setDate('data_efficacia', getDate('data_iniziopubblicazione').add(11, 'd')); 
+			setDate('data_esecutivita', setDateValue); 
+			setDate('data_efficacia', setDateValue); 
 		}
 
 		readonlyDate('data_esecutivita');
@@ -19,8 +22,13 @@ $(document).ready(function(){
 	};
 
 	var setArchiviazione = function(value){		
+		var setDateValue = getDate('data_iniziopubblicazione').add(10, 'd');
+		if (isBandoOConcorso){
+			setDateValue = getDate('data_fine_validita').add(1, 'd');
+		}
+		console.log(setDateValue);
 		if(value == 'riservato'){
-			setDate('data_finepubblicazione', getDate('data_iniziopubblicazione').add(10, 'd')); 	
+			setDate('data_finepubblicazione', setDateValue); 	
 			enableDate('data_finepubblicazione');
 			readonlyDate('data_finepubblicazione');
 
@@ -31,7 +39,7 @@ $(document).ready(function(){
 		}
 
 		if(value == 'archiviato'){
-			setDate('data_archiviazione', getDate('data_iniziopubblicazione').add(10, 'd')); 	
+			setDate('data_archiviazione', setDateValue); 	
 			enableDate('data_archiviazione');
 			readonlyDate('data_archiviazione');
 
@@ -60,9 +68,10 @@ $(document).ready(function(){
 			var day = container.find('.day').val();
 			var month = container.find('.month').val();
 			var year = container.find('.year').val();
+			return moment(day+"-"+month+"-"+year, "DD-MM-YYYY");
 		}
 		
-		return moment(day+"-"+month+"-"+year, "DD-MM-YYYY");
+		return moment("Invalid date", "DD-MM-YYYY");
 	}
 
 	var disableDate = function(identifier){
@@ -112,7 +121,7 @@ $(document).ready(function(){
 			var month = container.find('.month');
 			var year = container.find('.year');
 			
-			if (date){
+			if (date && date.isValid()){
 				day.val(date.format('DD'));
 				month.val(date.format('MM'));
 				year.val(date.format('YYYY'));
@@ -145,19 +154,15 @@ $(document).ready(function(){
 		}
 	}
 
-	var onModifyData = function(){
+	$('.data input').on('change', function(){		
 		setEsecutivita(esecutivita.val());
-	};
+	});
 
-	$('.data').find('.day').on('change', function(){
-		onModifyData();
-	});
-	$('.data').find('.month').on('change', function(){
-		onModifyData();
-	});
-	$('.data').find('.year').on('change', function(){
-		onModifyData();
-	});
+	if (isBandoOConcorso){		
+		$('.data_fine_validita input').on('change', function(){			
+			setArchiviazione(tipo_archiviazione.val());
+		});		
+	}
 
 	esecutivita.on('change', function(){
 		setEsecutivita($(this).val());
