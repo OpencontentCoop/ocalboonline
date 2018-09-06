@@ -26,7 +26,7 @@ $(document).ready(function(){
 		if (isBandoOConcorso){
 			setDateValue = getDate('data_fine_validita').add(1, 'd');
 		}
-		console.log(setDateValue);
+		
 		if(value == 'riservato'){
 			setDate('data_finepubblicazione', setDateValue); 	
 			enableDate('data_finepubblicazione');
@@ -187,9 +187,15 @@ $(document).ready(function(){
 	if (isEmpty('data_archiviazione') && isEmpty('data_finepubblicazione')){
 		setArchiviazione(tipo_archiviazione.val());
 	}else if (isEmpty('data_archiviazione') && !isEmpty('data_finepubblicazione')){
-		tipo_archiviazione.val('riservato').trigger('change');
+		tipo_archiviazione.val('riservato');
+		if (tipo_archiviazione.data('version') == 1){
+			tipo_archiviazione.trigger('change');
+		}
 	}else if (isEmpty('data_finepubblicazione') && !isEmpty('data_archiviazione')){
-		tipo_archiviazione.val('archiviato').trigger('change');
+		tipo_archiviazione.val('archiviato');
+		if (tipo_archiviazione.data('version') == 1){
+			tipo_archiviazione.trigger('change');
+		}
 	}else{
 		tipo_archiviazione.val('custom').trigger('change');
 		openDateAttributeGroup();

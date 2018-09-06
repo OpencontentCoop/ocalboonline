@@ -81,6 +81,7 @@
 
         <select id="tipo_archiviazione"
                 class="Form-input"
+                data-version="{$attribute.version}"
                 name="tipo_archiviazione">                
                 <option value="riservato">Archivio riservato</option>
                 <option value="archiviato">Archivio pubblico</option>                
