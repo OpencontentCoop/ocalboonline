@@ -23,17 +23,18 @@
 	'determinazione',
 	'bando',
 	'concorso',
-	'avviso'
+	'avviso',
+  'decreto'
 )}
 {def $current_year = currentdate()|datetime( 'custom', '%Y' )}
 {def $classes = fetch(class, list, hash('class_filter', $class_identifiers))}
 {def $first_year = api_search(concat('classes [', $class_identifiers|implode("','"), '] sort [anno=>asc] limit 1')).searchHits[0].data['ita-IT'].anno}
 {if or($first_year|eq(null), $first_year|lt(2007))}
-	{set $first_year = $current_year|sub(2)}
+	{set $first_year = $current_year|sub(10)}
 {elseif is_array($first_year)}
 	{set $first_year = $first_year[0]}
 	{if $first_year|eq('')}
-		{set $first_year = $current_year|sub(2)}
+		{set $first_year = $current_year|sub(10)}
 	{/if}
 {/if}
 
