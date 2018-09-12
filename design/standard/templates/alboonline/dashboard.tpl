@@ -25,14 +25,15 @@
 	'concorso',
 	'avviso'
 )}
+{def $current_year = currentdate()|datetime( 'custom', '%Y' )}
 {def $classes = fetch(class, list, hash('class_filter', $class_identifiers))}
 {def $first_year = api_search(concat('classes [', $class_identifiers|implode("','"), '] sort [anno=>asc] limit 1')).searchHits[0].data['ita-IT'].anno}
-{if or($first_year|eq(null), $first_year|lt(2010))}
-	{set $first_year = 2015}
+{if or($first_year|eq(null), $first_year|lt(2007))}
+	{set $first_year = $current_year|sub(2)}
 {elseif is_array($first_year)}
 	{set $first_year = $first_year[0]}
 	{if $first_year|eq('')}
-		{set $first_year = 2015}
+		{set $first_year = $current_year|sub(2)}
 	{/if}
 {/if}
 
@@ -68,7 +69,7 @@
 
 <small>FILTRA PER ANNO</small>
 <div class="facet-navigation" style="margin-bottom: 10px">
-	{for $first_year to currentdate()|datetime( 'custom', '%Y' ) as $year}
+	{for $first_year to $current_year as $year}
 		<a class="button" 
 		   data-field="anno" 
 		   data-operator="in" 

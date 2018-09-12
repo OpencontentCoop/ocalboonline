@@ -104,6 +104,11 @@ MatchFile=datatype/edit/anno.tpl
 Subdir=templates
 Match[attribute_identifier]=anno
 
+[edit_ezinteger_anno]
+Source=content/datatype/edit/ezinteger.tpl
+MatchFile=datatype/edit/anno_ezinteger.tpl
+Subdir=templates
+Match[attribute_identifier]=anno
 
 [edit_deliberazione_file]
 Source=content/datatype/edit/ezbinaryfile.tpl
