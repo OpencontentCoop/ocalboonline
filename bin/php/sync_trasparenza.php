@@ -12,9 +12,9 @@ $script->initialize();
 $script->setUseDebugAccumulators(true);
 
 $rootRemoteNodeId = 23830;
-$remoteUrl = 'https://vallarsa.upipa.opencontent.it';
+$remoteUrl = 'https://www.apspvallarsa.it/';
 
-OpenPAClassTools::$remoteUrl = 'http://vallarsa.upipa-dev.opencontent.it/openpa/classdefinition/';
+OpenPAClassTools::$remoteUrl = 'https://www.apspvallarsa.it/openpa/classdefinition/';
 eZINI::instance('openpa.ini')->setVariable('NetworkSettings', 'PrototypeUrl', OpenPAClassTools::$remoteUrl);
 
 try {
