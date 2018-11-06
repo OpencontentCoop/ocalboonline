@@ -90,8 +90,8 @@ moment.locale('it');
 		                        facetQuery += ' and ';
 			                }
 			            });
-			            facetQuery += settings.query + ' facets [' + facetFields.join(',') + '] limit 1';
-			            $.opendataTools.find(facetQuery, function(facetResponse){
+			            facetQuery += ' facets [' + facetFields.join(',') + '] limit 1';
+			            $.get(settings.facets_url+facetQuery, function(facetResponse){
 			            	$.each(facetResponse.facets, function(){			            		
 			            		var name = this.name;
 			            		var data = this.data;
@@ -104,9 +104,9 @@ moment.locale('it');
 			            	});
 			            	console.log(countVisible);
 			            	if (countVisible.length > 1){
-			            		$('.group-facets').show();			            		
+			            		$this.find('.group-facets').show();			            		
 			            	}else{
-			            		$('.group-facets').hide();
+			            		$this.find('.group-facets').hide();
 			            	}
 			            });
 					}

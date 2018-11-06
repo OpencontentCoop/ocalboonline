@@ -35,6 +35,7 @@
 		    		$('#container-{$block.id}').alboOnLine({ldelim}
 					  "query": "{$openpa_block.parameters.query}",
 					  "group_facet_query_part": "{$openpa_block.parameters.group_facet_query_part}",
+					  "facets_url": "{concat('/openpa/data/albo_on_line/', $block.id, '?search_facets=')|ezurl(no,full)}",
 					  "url": "{concat('/openpa/data/albo_on_line/', $block.id)|ezurl(no,full)}/",
 					  "searching": {if $openpa_block.parameters.searching}true{else}false{/if},
 					  "length": {$openpa_block.parameters.length},
