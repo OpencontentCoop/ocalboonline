@@ -28,13 +28,13 @@
         var overviewToggle = field.parent().find('.overview-toggle');
         if (parseInt(field.val()) == 0){
             helper.html('Attendere caricamento suggerimento progressivo...');
-            tools.find('progressivo_albo != 0 sort [progressivo_albo=>desc] limit 1', function(response){
+            tools.find('progressivo_albo != 0 and anno = '+(new Date()).getFullYear()+' sort [progressivo_albo=>desc] limit 1', function(response){
                 helper.html('');
                 if (response.totalCount > 0){
                     var current = parseInt(response.searchHits[0].data['ita-IT'].progressivo_albo);
                     field.val(++current);
                 }else{
-                    helper.html('Impossibile calcolare il progressivo successivo');
+                    field.val(1);
                 }
             });
         }
