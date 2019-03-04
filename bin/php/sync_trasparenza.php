@@ -13,6 +13,7 @@ $script->setUseDebugAccumulators(true);
 
 $rootRemoteNodeId = 23830;
 $remoteUrl = 'https://www.apspvallarsa.it/';
+$syncClasses = false;
 
 OpenPAClassTools::$remoteUrl = 'https://www.apspvallarsa.it/openpa/classdefinition/';
 eZINI::instance('openpa.ini')->setVariable('NetworkSettings', 'PrototypeUrl', OpenPAClassTools::$remoteUrl);
@@ -42,18 +43,20 @@ try {
         throw new Exception( 'Script non eseguibile secondo configurazione openpa.ini' );
     }
 
-    $classiTrasparenza = array(
-        'nota_trasparenza',
-        'pagina_trasparenza',
-        'trasparenza',
-    );
+    if ($syncClasses){
+        $classiTrasparenza = array(
+            'nota_trasparenza',
+            'pagina_trasparenza',
+            'trasparenza',
+        );
 
-	foreach( $classiTrasparenza as $identifier )
-	{
-	    OpenPALog::warning( 'Sincronizzo classe ' . $identifier );
-	    $tools = new OpenPAClassTools( $identifier, true ); // creo se non esiste
-	    $tools->sync( true, true ); // forzo e rimuovo attributi in più
-	}
+    	foreach( $classiTrasparenza as $identifier )
+    	{
+    	    OpenPALog::warning( 'Sincronizzo classe ' . $identifier );
+    	    $tools = new OpenPAClassTools( $identifier, true ); // creo se non esiste
+    	    $tools->sync( true, true ); // forzo e rimuovo attributi in più
+    	}
+    }
 
     $sourceClient = new HttpClient($remoteUrl);
     $tool = new SyncTrasparenzaTool(
@@ -77,6 +80,6 @@ try {
 } catch (Exception $e) {
     print_r($e->getTraceAsString());
     $errCode = $e->getCode();
-    $errCode = $errCode != 0 ? $errCode : 1; // If an error has occured, script must terminate with a status other than 0
+    $errCode = $errCode != 0 ? $errCode : 1; 
     $script->shutdown($errCode, $e->getMessage());
 }
