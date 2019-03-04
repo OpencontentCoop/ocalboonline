@@ -26,7 +26,6 @@ $(document).ready(function(){
 		if (isBandoOConcorso){
 			setDateValue = getDate('data_fine_validita').add(1, 'd');
 		}
-		
 		if(value == 'riservato'){
 			setDate('data_finepubblicazione', setDateValue); 	
 			enableDate('data_finepubblicazione');
@@ -38,7 +37,7 @@ $(document).ready(function(){
 			// closeDateAttributeGroup();
 		}
 
-		if(value == 'archiviato'){
+		else if(value == 'archiviato'){
 			setDate('data_archiviazione', setDateValue); 	
 			enableDate('data_archiviazione');
 			readonlyDate('data_archiviazione');
@@ -49,12 +48,12 @@ $(document).ready(function(){
 			// closeDateAttributeGroup();
 		}
 
-		if(value == 'custom'){
-			setDate('data_archiviazione', null); 	
+		else if(value == 'custom'){
+			//setDate('data_archiviazione', null); 	
 			enableDate('data_archiviazione');
 			notReadonlyDate('data_archiviazione');
 			
-			setDate('data_finepubblicazione', null); 	
+			//setDate('data_finepubblicazione', null); 	
 			enableDate('data_finepubblicazione');
 			notReadonlyDate('data_finepubblicazione');
 			
@@ -77,40 +76,45 @@ $(document).ready(function(){
 	var disableDate = function(identifier){
 		var container = $('.'+identifier);
 		if (container.length > 0){
-			var day = container.find('.day').attr("disabled","disabled").css('cursor', 'not-allowed');
-			var month = container.find('.month').attr("disabled","disabled").css('cursor', 'not-allowed');
-			var year = container.find('.year').attr("disabled","disabled").css('cursor', 'not-allowed');
+			var day = container.find('.day').attr("type", "hidden");
+			var month = container.find('.month').attr("type", "hidden");
+			var year = container.find('.year').attr("type", "hidden");
 			container.find('.fa-calendar').hide();
+			container.find('span.readonlyDate').remove();
 		}
 	}
 
 	var enableDate = function(identifier){
 		var container = $('.'+identifier);
 		if (container.length > 0){
-			var day = container.find('.day').removeAttr("disabled").css('cursor', 'default');
-			var month = container.find('.month').removeAttr("disabled").css('cursor', 'default');
-			var year = container.find('.year').removeAttr("disabled").css('cursor', 'default');
+			var day = container.find('.day').attr("type", "text");
+			var month = container.find('.month').attr("type", "text");
+			var year = container.find('.year').attr("type", "text");
 			container.find('.fa-calendar').show();
+			container.find('span.readonlyDate').remove();
 		}
 	}
 
 	var readonlyDate = function(identifier){
 		var container = $('.'+identifier);
 		if (container.length > 0){
-			var day = container.find('.day').attr("readonly","readonly").css('cursor', 'not-allowed');
-			var month = container.find('.month').attr("readonly","readonly").css('cursor', 'not-allowed');
-			var year = container.find('.year').attr("readonly","readonly").css('cursor', 'not-allowed');
+			var day = container.find('.day').attr("type", "hidden");
+			var month = container.find('.month').attr("type", "hidden");
+			var year = container.find('.year').attr("type", "hidden");
 			container.find('.fa-calendar').hide();
+			container.find('span.readonlyDate').remove();
+			container.append('<span class="readonlyDate">'+day.val()+'/'+month.val()+'/'+year.val()+'</span>');
 		}
 	}
 
 	var notReadonlyDate = function(identifier){
 		var container = $('.'+identifier);
 		if (container.length > 0){
-			var day = container.find('.day').removeAttr("readonly").css('cursor', 'default');
-			var month = container.find('.month').removeAttr("readonly").css('cursor', 'default');
-			var year = container.find('.year').removeAttr("readonly").css('cursor', 'default')
+			var day = container.find('.day').attr("type", "text");
+			var month = container.find('.month').attr("type", "text");
+			var year = container.find('.year').attr("type", "text");
 			container.find('.fa-calendar').show();
+			container.find('span.readonlyDate').remove();
 		}
 	}
 
@@ -120,15 +124,14 @@ $(document).ready(function(){
 			var day = container.find('.day');
 			var month = container.find('.month');
 			var year = container.find('.year');
-			
 			if (date && date.isValid()){
 				day.val(date.format('DD'));
 				month.val(date.format('MM'));
 				year.val(date.format('YYYY'));
 			}else{
-				day.val('');
-				month.val('');
-				year.val('');
+				day.removeAttr('value');
+				month.removeAttr('value');
+				year.removeAttr('value');
 			}
 		}
 	};
@@ -183,19 +186,18 @@ $(document).ready(function(){
 	}else{
 		readonlyDate('data_efficacia');
 	}
-
 	if (isEmpty('data_archiviazione') && isEmpty('data_finepubblicazione')){
 		setArchiviazione(tipo_archiviazione.val());
 	}else if (isEmpty('data_archiviazione') && !isEmpty('data_finepubblicazione')){
 		tipo_archiviazione.val('riservato');
-		if (tipo_archiviazione.data('version') == 1){
+		//if (tipo_archiviazione.data('version') == 1){
 			tipo_archiviazione.trigger('change');
-		}
+		//}
 	}else if (isEmpty('data_finepubblicazione') && !isEmpty('data_archiviazione')){
 		tipo_archiviazione.val('archiviato');
-		if (tipo_archiviazione.data('version') == 1){
+		//if (tipo_archiviazione.data('version') == 1){
 			tipo_archiviazione.trigger('change');
-		}
+		//}
 	}else{
 		tipo_archiviazione.val('custom').trigger('change');
 		openDateAttributeGroup();

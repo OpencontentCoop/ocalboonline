@@ -154,6 +154,8 @@ class BlockHandlerAlboOnLine extends OpenPABlockHandler
             $initialGroupFacets = $this->getGroupFacets($groupBy, $initialGroupFacetsQuery);
         }
 
+        $this->queryParts[] = "state != 'albo_on_line.non_visibile'";
+
         $this->parameters['query'] = implode(' and ', $this->queryParts);
         $this->parameters['group_facet_query_part'] = implode(' and ', $facetQueryParts);
         $this->parameters['group_facets'] = $groupFacets;
