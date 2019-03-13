@@ -1,46 +1,45 @@
 <p>
-    {if $current_user.is_logged_in}
 
-        {if fetch( 'user', 'has_access_to', hash( 'module', 'user', 'function', 'selfedit' ) )}
-            <span class="u-margin-right-s" id="myprofile">
-                <a href={"/user/edit/"|ezurl} title="Visualizza il profilo utente">Profilo utente</a>
-            </span>
-        {/if}
+    <span class="u-margin-right-s" id="login" style="display: none;">
+        <a href="{"/user/login"|ezurl(no)}"
+           title="Esegui il login al sito">Accedi con il tuo account</a>
+    </span>
 
-        {if fetch( 'user', 'has_access_to', hash( 'module', 'content', 'function', 'dashboard' ) )}
-            <span class="u-margin-right-s">
-                <a href="{"/content/dashboard/"|ezurl(no)}"
-                   title="Pannello strumenti">Strumenti</a>
-            </span>
-        {/if}
-
-        {if fetch( 'user', 'has_access_to', hash( 'module', 'alboonline', 'function', 'dashboard' ) )}
-            <span class="u-margin-right-s">
-                <a href="{"/alboonline/dashboard/"|ezurl(no)}"
-                   title="Cruscotto Albo">Cruscotto Albo</a>
-            </span>
-        {/if}
-
-        <span class="u-margin-right-s" id="logout">
-            <a href="{"/user/logout"|ezurl(no)}" title="Esegui il logout">
-                Logout {*({$current_user.contentobject.name|wash})*}
-            </a>
+    {if and(ezmodule( 'user/register' ), fetch( 'user', 'has_access_to', hash( 'module', 'user', 'function', 'register' ) ))}
+        <span class="u-margin-right-s" id="registeruser" style="display: none;">
+            <a href="{"/user/register"|ezurl(no)}"
+               title="Registrati al sito"> Crea il tuo account</a>
         </span>
-    {else}
-
-        {if ezmodule( 'user/login' )}
-            <span class="u-margin-right-s" id="login">
-                <a href="{concat("/user/login?url=",$module_result.uri)|ezurl(no)}"
-                   title="Esegui il login al sito">Accedi con il tuo account</a>
-            </span>
-        {/if}
-
-        {if ezmodule( 'user/register' )}
-            <span class="u-margin-right-s" id="registeruser">
-                <a href="{"/user/register"|ezurl(no)}" title="Registrati al sito">
-                    Crea il tuo account</a>
-            </span>
-        {/if}
-
     {/if}
+
 </p>
+
+<script>{literal}
+    $(document).ready(function(){
+        var login = $('#login');
+        login.find('a').attr('href', login.find('a').attr('href') + '?url='+ ModuleResultUri);
+        var register = $('#registeruser');
+        login.attr('href', login.attr('href') + '?url='+ ModuleResultUri);
+        var injectUserInfo = function(data){
+            if(data.error_text || !data.content){
+                login.show();
+                register.show();
+            }else{
+                login.after('<span class="u-margin-right-s" id="myprofile"><a href="/user/edit/" title="Visualizza il profilo utente">Il mio profilo</a></span><span class="u-margin-right-s" id="logout"><a href="/user/logout" title="Logout">Logout ('+data.content.name+')</a></span>');
+                if(data.content.has_access_to_dashboard){
+                    login.after('<span class="u-margin-right-s"><a href="/content/dashboard/" title="Pannello strumenti">Pannello strumenti</a></span><span class="u-margin-right-s"><a href="/alboonline/dashboard/" title="Cruscotto Albo">Cruscotto Albo</a></span>');
+                }
+                login.remove();
+                register.remove();
+            }
+        };
+        if(CurrentUserIsLoggedIn){
+            $.ez('openpaajax::userInfo', null, function(data){
+                injectUserInfo(data);
+            });
+        }else{
+            login.show();
+            register.show();
+        }
+    });
+{/literal}</script>
