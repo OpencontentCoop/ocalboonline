@@ -298,7 +298,7 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
                         }
                     }
                 }
-            } elseif ($this->hasTableFields) {
+            } elseif ($this->hasTableFields()) {
                 $tableFieldsParameters = $this->getTableFieldsParameters();
                 $excludeClasses[] = $tableFieldsParameters['class_identifier'];
             }

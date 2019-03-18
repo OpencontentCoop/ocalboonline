@@ -54,7 +54,7 @@
             {/if}
             
             {* Rappresentazione grafica (esclusa dal conteggio figli) *}
-            {if 'rappresentazione_grafica'|eq($trasparenza.remote_id_map[$node.object.remote_id])} 
+            {if and(is_set($trasparenza.remote_id_map[$node.object.remote_id]), 'rappresentazione_grafica'|eq($trasparenza.remote_id_map[$node.object.remote_id]))} 
                 {include uri='design:openpa/full/parts/amministrazione_trasparente/grafico_enti_partecipati.tpl'}
             {/if}
             
