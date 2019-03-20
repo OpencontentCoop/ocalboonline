@@ -17,6 +17,8 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
 
     const TABLE_FIELDS_ATTRIBUTE = 'fields';
 
+    const SUGGESTED_CLASSES_ATTRIBUTE = 'suggested_classes';
+
     function run()
     {
         $this->fnData['has_nota_trasparenza'] = 'hasNotaTrasparenza';
@@ -303,7 +305,16 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
                 $excludeClasses[] = $tableFieldsParameters['class_identifier'];
             }
 
-            return $excludeClasses;
+            if (isset($this->container->attributesHandlers[self::SUGGESTED_CLASSES_ATTRIBUTE])
+                && $this->container->attributesHandlers[self::SUGGESTED_CLASSES_ATTRIBUTE]->attribute('contentobject_attribute')->attribute('has_content')){
+                $stringClasses = $this->container->attributesHandlers[self::SUGGESTED_CLASSES_ATTRIBUTE]->attribute('contentobject_attribute')->toString();
+                $listClasses = explode(',', $stringClasses);
+                foreach ($listClasses as $listClass){
+                    $excludeClasses[] = trim($listClass);
+                }
+            }
+
+            return array_unique($excludeClasses);
         }
 
         return false;
