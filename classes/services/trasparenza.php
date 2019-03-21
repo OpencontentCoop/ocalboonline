@@ -320,7 +320,7 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
             $listClasses = explode(',', $stringClasses);
             foreach ($listClasses as $listClass){
                 $classes[] = trim($listClass);
-            }
+            }            
         }
 
         return array_unique($classes);
@@ -329,7 +329,10 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
     protected function getExcludeClassesForExtraChildren()
     {
         if ($this->isPaginaTrasparenza()) {
-            $excludeClasses = array(self::PAGINA_TRASPARENZA_CLASS, self::NOTA_TRASPARENZA_CLASS, self::FOLDER_CLASS);
+            
+            $baseClasses = array(self::PAGINA_TRASPARENZA_CLASS, self::NOTA_TRASPARENZA_CLASS, self::FOLDER_CLASS);
+            
+            $excludeClasses = array();
             if ($this->hasBlocks()) {
                 $blockAttributeContent = $this->getBlocksAttribute()->content();
                 foreach ($blockAttributeContent->attribute('zones') as $zone) {
@@ -345,9 +348,15 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
                 $excludeClasses[] = $tableFieldsParameters['class_identifier'];
             }
 
-            $excludeClasses = array_merge($excludeClasses, $this->getSuggestedClasses());            
+            $excludeClasses = array_merge($excludeClasses, $this->getSuggestedClasses());    
 
-            return array_unique($excludeClasses);
+            if (!empty($excludeClasses)){
+                $excludeClasses = array_merge($baseClasses, $excludeClasses);
+
+                return array_unique($excludeClasses);
+            }
+
+            return array();
         }
 
         return false;

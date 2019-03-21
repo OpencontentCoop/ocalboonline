@@ -165,15 +165,16 @@
                 {if $trasparenza.count_children_extra|gt(0)}
                     {if $node.object.can_create}
                         {editor_warning(
-                            concat("Vengono visualizzazi in <em>Ulteriori documenti</em> i contenuti presenti come figli questa pagina che non sono di classe <em>", $trasparenza.children_extra_exclude_classes|implode(', '), "</em>")
+                            concat("Vengono visualizzazi qui i contenuti presenti come figli questa pagina che non sono di classe <em>", $trasparenza.children_extra_exclude_classes|implode(', '), "</em>")
                         )}
                     {/if}  
                     <div class="openpa-widget">
                     {include uri='design:openpa/full/parts/amministrazione_trasparente/children_table.tpl'
                              nodes = fetch( 'content', 'list', $trasparenza.children_extra_fetch_parameters )
                              nodes_count = $trasparenza.count_children_extra
-                             title="Ulteriori documenti"
-                             class=array()}    
+                             title=cond($trasparenza.count_children|gt(0), "Ulteriori documenti", false())
+                             class=array()
+                             hide_date=true()}    
                     </div>                           
                 {/if}
 

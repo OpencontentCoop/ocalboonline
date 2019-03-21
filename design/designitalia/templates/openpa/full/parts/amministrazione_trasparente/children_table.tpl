@@ -20,7 +20,9 @@
                     <tr>
                         <th>Link al dettaglio</th>
                         <th>Tipologia</th>
-                        <th>Data di pubblicazione</th>
+                        {if is_set($hide_date)|not()}
+                            <th>Data di pubblicazione</th>
+                        {/if}
                     </tr>
                 </thead>
                 <tbody>
@@ -33,12 +35,14 @@
                         <td>
                             {$item.class_name|wash()}
                         </td>
+                        {if is_set($hide_date)|not()}
                         <td>
                             <span style="white-space: nowrap;">{$item.object.published|l10n(date)}</span>
                             {if $item.object.modified|gt(sum($item.object.published,86400))}<br />
                                 <span class="f_size_small">Ultima modifica: <strong>{$item.object.modified|l10n(date)}</strong></span>
                             {/if}
                         </td>
+                        {/if}
                         {undef $item_url_alias}
                     </tr>
                     {/foreach}            
