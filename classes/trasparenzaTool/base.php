@@ -189,4 +189,46 @@ abstract class BaseTrasparenzaTool
         return $isEmpty;
     }
 
+    protected function needSyncContent($remoteContent, $localContent)
+    {
+        $remoteData = $remoteContent['data']['ita-IT'];
+        $localData = $localContent['data']['ita-IT'];
+
+        foreach ($remoteData as $key => $remoteValue) {
+            if ($key == 'referente'){
+                continue;
+            }
+            $localValue = $localData[$key];
+            if ($this->hasDiff($remoteValue, $localValue)){
+                $this->currentLog->appendWarning("Diff in $key");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function hasDiff($remoteValue, $localValue)
+    {
+        if (is_string($remoteValue)){            
+            return $this->cleanForDiff($remoteValue) != $this->cleanForDiff($localValue);
+        }else{            
+            foreach ($remoteValue as $key => $value) {
+                if ($this->hasDiff($value, $localValue[$key])){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected function cleanForDiff($value)
+    {
+        $value = strip_tags($value);
+        $value = preg_replace('/\s/', '', $value);
+        $value = trim($value);
+
+        return $value;
+    }
+
 }

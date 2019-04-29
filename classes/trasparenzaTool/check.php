@@ -12,7 +12,9 @@ class CheckTrasparenzaTool extends BaseTrasparenzaTool
         $localContent
     )
     {
-        try{
+        try{            
+            $this->needSyncContent($remoteContent, $localContent);
+
             $currentObject = eZContentObject::fetchByRemoteID($localContent['metadata']['remoteId']);
             if (!$currentObject instanceof eZContentObject) {
                 throw new Exception("Content with remote " . $remoteContent['metadata']['remoteId'] . " not found");

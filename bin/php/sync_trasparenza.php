@@ -11,8 +11,12 @@ $options = $script->getOptions();
 $script->initialize();
 $script->setUseDebugAccumulators(true);
 
+// $rootRemoteNodeId = 23830;
+// $remoteUrl = 'https://www.apspvallarsa.it/';
+
 $rootRemoteNodeId = 23830;
-$remoteUrl = 'https://www.apspvallarsa.it/';
+$remoteUrl = 'https://upipa.opencontent.it/';
+
 $syncClasses = true;
 
 OpenPAClassTools::$remoteUrl = 'https://www.apspvallarsa.it/openpa/classdefinition/';

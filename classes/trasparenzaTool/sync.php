@@ -105,39 +105,6 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
 
     }
 
-    private function needSyncContent($remoteContent, $localContent)
-    {
-        $remoteData = $remoteContent['data']['ita-IT'];
-        $localData = $localContent['data']['ita-IT'];
-
-        foreach ($remoteData as $key => $remoteValue) {
-            if ($key == 'referente'){
-                continue;
-            }
-            $localValue = $localData[$key];
-            if ($this->hasDiff($remoteValue, $localValue)){
-                $this->currentLog->appendWarning("Diff in $key");
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function hasDiff($remoteValue, $localValue)
-    {
-        if (is_string($remoteValue)){
-            return strip_tags($remoteValue) != strip_tags($localValue);
-        }else{            
-            foreach ($remoteValue as $key => $value) {
-                if ($this->hasDiff($value, $localValue[$key])){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     /**
      * @param array $remoteContent
      * @param int $localCurrentParentNodeId
@@ -157,7 +124,7 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
         if ($payload->hasData('image', 'ita-IT')) {
             $imageUrl = $payload->getData('image', 'ita-IT');
             $payload->setData('ita-IT', 'image', array(
-                'url' => $remoteUrl . '/' . $imageUrl['url'],
+                'url' => $remoteUrl . '/' . ltrim($imageUrl['url'], '/'),
                 'filename' => $imageUrl['filename'],
             ));
         }

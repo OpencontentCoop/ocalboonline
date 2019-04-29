@@ -28,9 +28,13 @@
                 <tbody>
                     {foreach $nodes as $item}
                     <tr>
-                        {def $item_url_alias = cond($item.class_identifier|eq('folder'), $item.url_alias, $item.object.main_node.url_alias)}
+                        {def $openpa_item = object_handler($item)}
+                        {def $item_url_alias = cond($item.class_identifier|eq('folder'), $item.url_alias|ezurl(no), $item.object.main_node.url_alias|ezurl(no))}
+                        {if or($item|has_attribute('location'), $item|has_attribute('internal_location'))}
+                            {set $item_url_alias = $openpa_item.content_link.full_link}
+                        {/if}
                         <td>
-                            <a href={$item_url_alias|ezurl()} title="Vai al dettaglio di {$item.name|wash()}">{$item.name|wash()}</a>
+                            <a href="{$item_url_alias}" title="Vai al dettaglio di {$item.name|wash()}">{$item.name|wash()}</a>
                         </td>
                         <td>
                             {$item.class_name|wash()}
@@ -43,7 +47,7 @@
                             {/if}
                         </td>
                         {/if}
-                        {undef $item_url_alias}
+                        {undef $item_url_alias $openpa_item}
                     </tr>
                     {/foreach}            
                 </tbody>
