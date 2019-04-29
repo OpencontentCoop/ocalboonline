@@ -124,7 +124,7 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
         if ($payload->hasData('image', 'ita-IT')) {
             $imageUrl = $payload->getData('image', 'ita-IT');
             $payload->setData('ita-IT', 'image', array(
-                'url' => $remoteUrl . '/' . ltrim($imageUrl['url'], '/'),
+                'url' => rtrim($remoteUrl, '/') . '/' . ltrim($imageUrl['url'], '/'),
                 'filename' => $imageUrl['filename'],
             ));
         }
