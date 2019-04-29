@@ -165,7 +165,7 @@
                 {if $trasparenza.count_children_extra|gt(0)}
                     {if $node.object.can_create}
                         {editor_warning(
-                            concat("Vengono visualizzazi qui i contenuti presenti come figli questa pagina che non sono di classe <em>", $trasparenza.children_extra_exclude_classes|implode(', '), "</em>")
+                            concat('Vengono visualizzazi qui i contenuti presenti che non corrispondono alle classi di contenuto consigliate attraverso le "Note per il redattore"')
                         )}
                     {/if}  
                     <div class="openpa-widget">
