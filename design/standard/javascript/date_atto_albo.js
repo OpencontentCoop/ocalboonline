@@ -21,11 +21,17 @@ $(document).ready(function(){
 		readonlyDate('data_efficacia');
 	};
 
-	var setArchiviazione = function(value){		
-		var setDateValue = getDate('data_iniziopubblicazione').add(10, 'd');
+	var calculateDateForArchiviazione = function(){
+		var dateValue = getDate('data_iniziopubblicazione').add(10, 'd');
 		if (isBandoOConcorso){
-			setDateValue = getDate('data_fine_validita').add(1, 'd');
+			dateValue = getDate('data_fine_validita').add(1, 'd');
 		}
+
+		return dateValue;
+	}
+
+	var setArchiviazione = function(value){
+		setDateValue = calculateDateForArchiviazione();
 		if(value == 'riservato'){
 			setDate('data_finepubblicazione', setDateValue); 	
 			enableDate('data_finepubblicazione');
@@ -186,21 +192,39 @@ $(document).ready(function(){
 	}else{
 		readonlyDate('data_efficacia');
 	}
-	if (isEmpty('data_archiviazione') && isEmpty('data_finepubblicazione')){
+
+	if (tipo_archiviazione.data('version') > 1){
+		if (isEmpty('data_archiviazione') && isEmpty('data_finepubblicazione')){
+			console.log('empty data_archiviazione and data_finepubblicazione: set default');
+			setArchiviazione(tipo_archiviazione.val());
+		}
+
+		else if (isEmpty('data_archiviazione') && !isEmpty('data_finepubblicazione') 
+				 && getDate('data_finepubblicazione').format("DD-MM-YYYY") == calculateDateForArchiviazione().format("DD-MM-YYYY")){
+			console.log('empty data_archiviazione and valid data_finepubblicazione: set tipo_archiviazione riservato');
+			tipo_archiviazione.val('riservato');
+			tipo_archiviazione.trigger('change');
+		}
+
+		else if (isEmpty('data_finepubblicazione') && !isEmpty('data_archiviazione')
+			     && getDate('data_archiviazione').format("DD-MM-YYYY") == calculateDateForArchiviazione().format("DD-MM-YYYY")){
+			console.log('valid data_archiviazione and empty data_finepubblicazione: set tipo_archiviazione archiviato');
+			tipo_archiviazione.val('archiviato');
+			tipo_archiviazione.trigger('change');
+		}
+
+		else{
+			if (!isEmpty('data_archiviazione') && getDate('data_archiviazione').format("DD-MM-YYYY") != calculateDateForArchiviazione().format("DD-MM-YYYY")){
+				console.log('custom data_archiviazione ('+getDate('data_archiviazione').format("DD-MM-YYYY")+' != '+ calculateDateForArchiviazione().format("DD-MM-YYYY") +'): set custom tipo_archiviazione');
+			}
+			if (!isEmpty('data_finepubblicazione') && getDate('data_finepubblicazione').format("DD-MM-YYYY") != calculateDateForArchiviazione().format("DD-MM-YYYY")){
+				console.log('custom data_finepubblicazione ('+getDate('data_finepubblicazione').format("DD-MM-YYYY")+' != '+ calculateDateForArchiviazione().format("DD-MM-YYYY") +'): set custom tipo_archiviazione');	
+			}
+			tipo_archiviazione.val('custom').trigger('change');
+			openDateAttributeGroup();
+		}
+	}else if (isEmpty('data_archiviazione') && isEmpty('data_finepubblicazione')){
 		setArchiviazione(tipo_archiviazione.val());
-	}else if (isEmpty('data_archiviazione') && !isEmpty('data_finepubblicazione')){
-		tipo_archiviazione.val('riservato');
-		//if (tipo_archiviazione.data('version') == 1){
-			tipo_archiviazione.trigger('change');
-		//}
-	}else if (isEmpty('data_finepubblicazione') && !isEmpty('data_archiviazione')){
-		tipo_archiviazione.val('archiviato');
-		//if (tipo_archiviazione.data('version') == 1){
-			tipo_archiviazione.trigger('change');
-		//}
-	}else{
-		tipo_archiviazione.val('custom').trigger('change');
-		openDateAttributeGroup();
 	}
 
 	if (isEmpty('data_finepubblicazione_trasparenza')){
