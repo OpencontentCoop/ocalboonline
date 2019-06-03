@@ -19,8 +19,10 @@ $remoteUrl = 'https://upipa.opencontent.it/';
 
 $syncClasses = true;
 
-OpenPAClassTools::$remoteUrl = 'https://www.apspvallarsa.it/openpa/classdefinition/';
+OpenPAClassTools::$remoteUrl = 'https://upipa.opencontent.it/openpa/classdefinition/';
 eZINI::instance('openpa.ini')->setVariable('NetworkSettings', 'PrototypeUrl', OpenPAClassTools::$remoteUrl);
+
+OCOpenDataClassRepositoryCache::clearCache();
 
 try {
 
