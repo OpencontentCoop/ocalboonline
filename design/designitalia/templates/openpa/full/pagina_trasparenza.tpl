@@ -35,6 +35,9 @@
                 <div class="Callout Callout--could u-text-r-xs u-margin-top-m u-margin-bottom-m">
                     <p class="u-color-grey-90 u-text-p">
                         <em>{attribute_view_gui attribute=$trasparenza.nota_trasparenza.data_map.testo_nota}</em>
+                        {if $trasparenza.nota_trasparenza|has_attribute('file')}
+                            <span>{attribute_view_gui attribute=$trasparenza.nota_trasparenza|attribute('file')}</span>
+                        {/if}
                         {include uri="design:parts/toolbar/node_edit.tpl" current_node=$trasparenza.nota_trasparenza}
                         {include uri="design:parts/toolbar/node_trash.tpl" current_node=$trasparenza.nota_trasparenza}
                     </p>
@@ -90,9 +93,12 @@
                     {* figli in base a sintassi convenzionale sul campo fields *}
                     {elseif $trasparenza.has_table_fields}
 
-                        {include uri='design:openpa/full/parts/amministrazione_trasparente/children_table_fields.tpl'                                 
-                                 nodes_count = $trasparenza.count_children
-                                 fields = $trasparenza.table_fields}
+                        {foreach $trasparenza.table_fields as $index => $fields}
+                            {include uri='design:openpa/full/parts/amministrazione_trasparente/children_table_fields.tpl'
+                                     nodes_count = $trasparenza.count_children
+                                     fields = $fields
+                                     index = $index}
+                        {/foreach}
 
                         {if $trasparenza.count_children_folder|gt(0)}
 
