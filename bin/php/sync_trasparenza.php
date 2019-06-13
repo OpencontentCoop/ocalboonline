@@ -7,7 +7,7 @@ $script = eZScript::instance();
 
 $script->startup();
 
-$options = $script->getOptions('[remote:][root_node:][sync_classes]',
+$options = $script->getOptions('[remote:][root_node:][sync_classes][force]',
     '',
     array(
         'remote' => "Remote url",
@@ -41,9 +41,8 @@ try {
 
     $instance = OpenPAInstance::current();
 
-    $avoids = array(
-        //'prototipo',
-        'vallarsa',
+    $avoids = $options['force'] ? array() : array(
+        'prototipo',
     );
 
     foreach($avoids as $avoid) {
@@ -52,7 +51,7 @@ try {
         }
     }
 
-    if (OpenPAINI::variable('NetworkSettings', 'SyncTrasparenza', 'enabled') != 'enabled'){
+    if (!$options['force'] && OpenPAINI::variable('NetworkSettings', 'SyncTrasparenza', 'enabled') != 'enabled'){
         throw new Exception( 'Script non eseguibile secondo configurazione openpa.ini' );
     }
 
