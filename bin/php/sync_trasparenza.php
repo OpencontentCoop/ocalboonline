@@ -29,7 +29,7 @@ $cli = eZCLI::instance();
 
 try {
 
-    if (!$options['remote'] || $options['root_node']){
+    if (!$options['remote'] || !$options['root_node']){
         throw new Exception("Missing arguments");
     }
 
