@@ -12,7 +12,7 @@
 				{$openpa_block.error|wash()}
 			</div>
 		{else}
-
+			{run-once}
 			{ezscript_require(array(
 				'jquery.dataTables.js', 
 				'jquery.opendataTools.js',
@@ -28,9 +28,11 @@
 				'dataTables.bootstrap.css',
 				'responsive.dataTables.min.css'
 			))}
+			{/run-once}
 			{def $currentLanguage = ezini('RegionalSettings','Locale')}
 			<script type="text/javascript" language="javascript" class="init">
 		    	moment.locale('it');
+		    	$.support.transition = false;
 		    	$(document).ready(function () {ldelim}
 		    		$('#container-{$block.id}').alboOnLine({ldelim}
 					  "query": "{$openpa_block.parameters.query}",
@@ -177,9 +179,6 @@ button.close {-webkit-appearance: none;padding: 0;cursor: pointer;background: tr
 {/literal}
 <div id="albboonline-preview" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>	        
-	    </div>
         <div class="modal-content"></div>
     </div>
 </div>
