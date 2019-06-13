@@ -7,24 +7,31 @@ $script = eZScript::instance();
 
 $script->startup();
 
-$options = $script->getOptions();
+$options = $script->getOptions('[remote:][root_node:][sync_classes]',
+    '',
+    array(
+        'remote' => "Remote url",
+        'root_node' => "Remote root node",
+        'sync_classes' => "Sincronizza le classi",
+    )
+);
 $script->initialize();
 $script->setUseDebugAccumulators(true);
 
-// $rootRemoteNodeId = 23830;
-// $remoteUrl = 'https://www.apspvallarsa.it/';
+$rootRemoteNodeId = $options['root_node'];
+$remoteUrl = $options['remote'];
 
-$rootRemoteNodeId = 23830;
-$remoteUrl = 'https://upipa.opencontent.it/';
-
-$syncClasses = true;
-
-OpenPAClassTools::$remoteUrl = 'https://upipa.opencontent.it/openpa/classdefinition/';
-eZINI::instance('openpa.ini')->setVariable('NetworkSettings', 'PrototypeUrl', OpenPAClassTools::$remoteUrl);
+$syncClasses = $options['sync_classes'];
 
 OCOpenDataClassRepositoryCache::clearCache();
 
+$cli = eZCLI::instance();
+
 try {
+
+    if (!$options['remote'] || $options['root_node']){
+        throw new Exception("Missing arguments");
+    }
 
     /** @var eZUser $user */
     $user = eZUser::fetchByName( 'admin' );
@@ -58,8 +65,9 @@ try {
 
     	foreach( $classiTrasparenza as $identifier )
     	{
-    	    OpenPALog::warning( 'Sincronizzo classe ' . $identifier );
-    	    $tools = new OpenPAClassTools( $identifier, true ); // creo se non esiste
+    	    $cli->warning( 'Sincronizzo classe ' . $identifier );
+            $remoteClassUrl = rtrim($remoteUrl, '/') . '/classtools/definition/';
+            $tools = new OCClassTools($identifier, true, array(), $remoteClassUrl);
     	    $tools->sync( true, true ); // forzo e rimuovo attributi in più
     	}
     }
@@ -70,11 +78,12 @@ try {
         array('trasparenza', 'pagina_trasparenza')
     );
 
-    eZCLI::instance()->warning($remoteUrl);
+    $cli->warning($remoteUrl);
 
     $rootContent = $sourceClient->browse($rootRemoteNodeId);
     $remoteId = $rootContent['remoteId'];
     $rootObject = eZContentObject::fetchByRemoteID($remoteId);
+    $cli->warning($rootObject->attribute('name'));
     $rootParentNodeId = $rootObject->attribute('main_parent_node_id');
 
 	$tool->run($rootRemoteNodeId, $rootParentNodeId);

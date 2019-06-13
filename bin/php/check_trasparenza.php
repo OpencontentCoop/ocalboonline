@@ -7,14 +7,26 @@ $script = eZScript::instance();
 
 $script->startup();
 
-$options = $script->getOptions();
+$options = $script->getOptions('[remote:][root_node:]',
+    '',
+    array(
+        'remote' => "Remote url",
+        'root_node' => "Remote root node",
+    )
+);
 $script->initialize();
 $script->setUseDebugAccumulators(true);
 
-$rootRemoteNodeId = 23830;
-$remoteUrl = 'https://upipa.opencontent.it/';
+$rootRemoteNodeId = $options['root_node'];
+$remoteUrl = $options['remote'];
+
+$cli = eZCLI::instance();
 
 try {
+
+    if (!$options['remote'] || $options['root_node']){
+        throw new Exception("Missing arguments");
+    }
 
     /** @var eZUser $user */
     $user = eZUser::fetchByName('admin');
@@ -46,15 +58,16 @@ try {
     );
 
     foreach ($classiTrasparenza as $identifier) {
-        OpenPALog::warning('Controllo classe ' . $identifier);
-        $tools = new OpenPAClassTools($identifier);
+        $cli->warning('Controllo classe ' . $identifier);
+        $remoteClassUrl = rtrim($remoteUrl, '/') . '/classtools/definition/';
+        $tools = new OCClassTools($identifier, false, array(), $remoteClassUrl);
         $tools->compare();
         $result = $tools->getData();
         if ($result->missingAttributes) {
-            OpenPALog::warning('Attributi mancanti rispetto al prototipo: ' . count($result->missingAttributes));
+            $cli->warning('Attributi mancanti rispetto al prototipo: ' . count($result->missingAttributes));
         }
         if ($result->extraAttributes) {
-            OpenPALog::error('Attributi aggiuntivi rispetto al prototipo: ' . count($result->extraAttributes));
+            $cli->error('Attributi aggiuntivi rispetto al prototipo: ' . count($result->extraAttributes));
         }
         if ($result->hasDiffAttributes) {
             $identifiers = array_keys($result->diffAttributes);
@@ -62,11 +75,11 @@ try {
             $warnings = array_intersect(array_keys($result->warnings), $identifiers);
 
             if (count($errors) > 0)
-                OpenPALog::error('Attributi che differiscono dal prototipo: ' . count($result->diffAttributes));
+                $cli->error('Attributi che differiscono dal prototipo: ' . count($result->diffAttributes));
             elseif (count($warnings) > 0)
-                OpenPALog::warning('Attributi che differiscono dal prototipo: ' . count($result->diffAttributes));
+                $cli->warning('Attributi che differiscono dal prototipo: ' . count($result->diffAttributes));
             else
-                OpenPALog::notice('Attributi che differiscono dal prototipo: ' . count($result->diffAttributes));
+                $cli->notice('Attributi che differiscono dal prototipo: ' . count($result->diffAttributes));
         }
 
     }
@@ -77,11 +90,12 @@ try {
         array('trasparenza', 'pagina_trasparenza')
     );
 
-    eZCLI::instance()->warning($remoteUrl);
+    $cli->warning($remoteUrl);
 
     $rootContent = $sourceClient->browse($rootRemoteNodeId);
     $remoteId = $rootContent['remoteId'];
     $rootObject = eZContentObject::fetchByRemoteID($remoteId);
+    $cli->warning($rootObject->attribute('name'));
     $rootParentNodeId = $rootObject->attribute('main_parent_node_id');
 
     $tool->run($rootRemoteNodeId, $rootParentNodeId);
