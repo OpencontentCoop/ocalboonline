@@ -161,7 +161,7 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
             }
         }
 
-        $response = $this->repository->createUpdate($payload);
+        $response = $this->repository->createUpdate($payload->getArrayCopy());
 
         if ($response['message'] == 'success') {
             $this->currentLog->appendWarning($response['method']);            
