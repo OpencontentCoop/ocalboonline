@@ -93,11 +93,11 @@
                     {* figli in base a sintassi convenzionale sul campo fields *}
                     {elseif $trasparenza.has_table_fields}
 
-                        {foreach $trasparenza.table_fields as $index => $fields}
+                        {foreach $trasparenza.table_fields as $table_index => $fields}
                             {include uri='design:openpa/full/parts/amministrazione_trasparente/children_table_fields.tpl'
                                      nodes_count = $trasparenza.count_children
                                      fields = $fields
-                                     index = $index}
+                                     table_index = $table_index}
                         {/foreach}
 
                         {if $trasparenza.count_children_folder|gt(0)}
