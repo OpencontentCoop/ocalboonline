@@ -20,7 +20,8 @@
 				'dataTables.bootstrap.js', 
 				'dataTables.responsive.min.js', 
 				'moment-with-locales.min.js', 
-				'moment-timezone-with-data.js', 
+				'moment-timezone-with-data.js',
+				'bootstrap/transition.js',
 				'bootstrap/modal.js',
 				'alboonline_block.js'
 			))}
