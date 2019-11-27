@@ -36,7 +36,7 @@ if ($options['sync_classes']){
 
 foreach( $siteaccess as $sa )
 {
-    $command = "php extension/ocalboonline/bin/php/sync_trasparenza.php -s{$sa} $optionsArgs";
+    $command = "php extension/ocalboonline/bin/php/check_trasparenza.php -s{$sa} $optionsArgs";
     $cli->error("Eseguo: $command");
     $cli->output();
     system( $command );
