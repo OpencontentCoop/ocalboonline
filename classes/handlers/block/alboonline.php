@@ -23,7 +23,7 @@ class BlockHandlerAlboOnLine extends OpenPABlockHandler
             $this->data['error'] = $e->getMessage();
         }
         $this->data['root_node'] = $this->currentSubTreeNode;
-        $this->data['has_content'] = false;
+        $this->data['has_content'] = true;
         $this->data['content'] = array();
         $this->data['parameters'] = $this->parameters;
     }
