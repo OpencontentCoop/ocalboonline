@@ -413,20 +413,42 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
     {
         $index = 0;
         $fieldsParts = explode('|', $string);
+
+        $parentNodeId = null;
+        if (strpos($fieldsParts[$index], 'parent:') === 0) {
+            $parameters = array_shift($fieldsParts);
+            $nodeParts = explode(':', $parameters);
+            $parentNodeId = $nodeParts[1];
+        }
+
+        $filters = null;
+        if (strpos($fieldsParts[$index], 'filters:') === 0) {
+            $parameters = array_shift($fieldsParts);
+            $filtersParts = explode(':', $parameters);
+            $filters = $filtersParts[1];
+        }
+
         $facetField = null;
-        if (strpos($fieldsParts[0], 'group_by') === 0) {
-            $index = 1;
-            $groupParts = explode(':', $fieldsParts[0]);
+        if (strpos($fieldsParts[$index], 'group_by:') === 0) {
+            $parameters = array_shift($fieldsParts);
+            $groupParts = explode(':', $parameters);
             $facetField = $groupParts[1];
         }
 
-        $classIdentifier = $fieldsParts[$index];
+        $orderFields = null;
+        if (strpos($fieldsParts[$index], 'order_by:') === 0) {
+            $parameters = array_shift($fieldsParts);
+            $ordersParts = explode(':', $parameters);
+            $orderFields = explode(',', $ordersParts[1]);
+        }
+
+        $classIdentifier = array_shift($fieldsParts);
         $index++;
 
-        $identifiers = explode(',', $fieldsParts[$index]);
+        $identifiers = explode(',', array_shift($fieldsParts));
         $index++;
 
-        $depth = isset($fieldsParts[$index]) ? $fieldsParts[$index] : false;
+        $depth = array_shift($fieldsParts);
 
         $facets = array();
 
@@ -447,7 +469,32 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
                 }
             }
 
-            $node = $this->container->getContentNode();
+            // To indicate sorting direction, fields may be prefixed with + (ascending) or - (descending),
+            $orders = array();
+            if (is_array($orderFields)) {
+                foreach ($orderFields as $orderField) {
+                    $sort = substr($orderField, 0, 1);
+                    $field = substr($orderField, 1);
+                    foreach ($classFields as $index => $classField) {
+                        if ($classField['identifier'] == $field) {
+                            $direction = $sort == '+' ? 'asc' : 'desc';
+                            $orders[] = [$index, $direction];
+                        }
+                    }
+                }
+            }
+            if (empty($orders)) {
+                $orders = [[0, 'asc']]; //default
+            }
+
+            $node = null;
+            if ($parentNodeId) {
+                $node = eZContentObjectTreeNode::fetch((int)$parentNodeId);
+            }
+            if (!$node instanceof eZContentObjectTreeNode) {
+                $node = $this->container->getContentNode();
+            }
+
             $nodeId = $node->attribute('node_id');
 
             $depthQueryPart = '';
@@ -458,6 +505,12 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
             }
 
             $query = "{$depthQueryPart} classes [{$classIdentifier}] subtree [{$nodeId}]";
+            if ($filters) {
+                $query .= ' and ' . $filters;
+            }
+
+            //eZDebug::writeDebug($query, __METHOD__);
+
             $facetQuery = null;
             if ($facetField) {
                 $contentSearch = new ContentSearch();
@@ -478,15 +531,19 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
                     }
                 }
             }
-
-            return array(
+            $result = array(
                 'query' => $query,
                 'facet_query' => $facetQuery,
                 'class_fields' => $classFields,
+                'order' => json_encode($orders),
                 'group_by' => $facetField,
                 'class_identifier' => $classIdentifier,
                 'facets' => $facets,
             );
+
+            //eZDebug::writeDebug($result, __METHOD__);
+
+            return $result;
 
 
         } catch (Exception $e) {
