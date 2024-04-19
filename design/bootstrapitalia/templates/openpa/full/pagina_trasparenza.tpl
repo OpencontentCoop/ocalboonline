@@ -284,6 +284,12 @@
                 </div>
             {/if}
 
+            <div class="mt-5">
+                {include uri=$openpa['content_show_published'].template}
+                {include uri=$openpa['content_show_modified'].template}
+            </div>
+            
+
         </section>
     </div>
 </section>
