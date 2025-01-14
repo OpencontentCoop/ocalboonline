@@ -43,6 +43,9 @@ abstract class BaseTrasparenzaTool
     ) {
         $this->remoteUrl = $remoteUrl;
         $this->sourceClient = new HttpClient($remoteUrl);
+        if (getenv('MIGRATE_USE_LOCALHOST')) {
+            $this->sourceClient = new OCLocalHttpClient($remoteUrl);
+        }
 
         if ($classIdentifiers)
             $this->classIdentifiers = $classIdentifiers;
@@ -191,17 +194,19 @@ abstract class BaseTrasparenzaTool
 
     protected function needSyncContent($remoteContent, $localContent)
     {
-        $remoteData = $remoteContent['data']['ita-IT'];
-        $localData = $localContent['data']['ita-IT'];
+        foreach ($remoteContent['metadata']['languages'] as $locale) {
+            $remoteData = $remoteContent['data'][$locale];
+            $localData = $localContent['data'][$locale];
 
-        foreach ($remoteData as $key => $remoteValue) {
-            if ($key == 'referente'){
-                continue;
-            }
-            $localValue = $localData[$key];
-            if ($this->hasDiff($remoteValue, $localValue)){
-                $this->currentLog->appendWarning("Diff in $key");
-                return true;
+            foreach ($remoteData as $key => $remoteValue) {
+                if ($key == 'referente') {
+                    continue;
+                }
+                $localValue = $localData[$key];
+                if ($this->hasDiff($remoteValue, $localValue)) {
+                    $this->currentLog->appendWarning("Diff in $key ($locale)");
+                    return true;
+                }
             }
         }
 

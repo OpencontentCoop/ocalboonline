@@ -84,6 +84,10 @@ try {
     }
 
     $sourceClient = new HttpClient($remoteUrl);
+    if (getenv('MIGRATE_USE_LOCALHOST')) {
+        $sourceClient = new OCLocalHttpClient($remoteUrl);
+    }
+
     $tool = new CheckTrasparenzaTool(
         $remoteUrl,
         array('trasparenza', 'pagina_trasparenza')

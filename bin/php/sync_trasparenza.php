@@ -92,6 +92,7 @@ try {
 
     $script->shutdown();
 } catch (Exception $e) {
+    $cli->error($e->getMessage());
     print_r($e->getTraceAsString());
     $errCode = $e->getCode();
     $errCode = $errCode != 0 ? $errCode : 1; 

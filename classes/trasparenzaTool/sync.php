@@ -11,7 +11,7 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
         $localContent
     )
     {
-        try {            
+        try {
 
             if ($this->needSyncContent($remoteContent, $localContent)){
                 $this->syncContent($remoteContent, $localCurrentParentNodeId);
@@ -121,43 +121,46 @@ class SyncTrasparenzaTool extends BaseTrasparenzaTool
             array($localCurrentParentNodeId)
         );
 
-        if ($payload->hasData('image', 'ita-IT')) {
-            $imageUrl = $payload->getData('image', 'ita-IT');
-            $payload->setData('ita-IT', 'image', array(
-                'url' => rtrim($remoteUrl, '/') . '/' . ltrim($imageUrl['url'], '/'),
-                'filename' => $imageUrl['filename'],
-            ));
-        }
-
-        if ($payload->hasData('decorrenza_di_pubblicazione', 'ita-IT')) {
-            $data = $payload->getData('decorrenza_di_pubblicazione', 'ita-IT');
-            if (SyncTrasparenzaTool::isEmpty($data)) {
-                $payload->setData('ita-IT', 'decorrenza_di_pubblicazione', array());
+        foreach ($payload->getMetadaData('languages') as $locale) {
+            if ($payload->hasData('image', $locale)) {
+                $imageUrl = $payload->getData('image', $locale);
+                $payload->setData($locale, 'image', [
+                    'url' => rtrim($remoteUrl, '/') . '/' . ltrim($imageUrl['url'], '/'),
+                    'filename' => $imageUrl['filename'],
+                ]);
             }
-        }
 
-        if ($payload->hasData('aggiornamento', 'ita-IT')) {
-            $data = $payload->getData('aggiornamento', 'ita-IT');
-            if (SyncTrasparenzaTool::isEmpty($data)) {
-                $payload->setData('ita-IT', 'aggiornamento', array());
+            if ($payload->hasData('decorrenza_di_pubblicazione', $locale)) {
+                $data = $payload->getData('decorrenza_di_pubblicazione', $locale);
+                $data = array_filter($data);
+                if (SyncTrasparenzaTool::isEmpty($data)) {
+                    $payload->setData($locale, 'decorrenza_di_pubblicazione', []);
+                }
             }
-        }
 
-        if ($payload->hasData('licenza', 'ita-IT')) {
-            $data = $payload->getData('licenza', 'ita-IT');
-            if (SyncTrasparenzaTool::isEmpty($data)) {
-                $payload->setData('ita-IT', 'licenza', array());
+            if ($payload->hasData('aggiornamento', $locale)) {
+                $data = $payload->getData('aggiornamento', $locale);
+                if (SyncTrasparenzaTool::isEmpty($data)) {
+                    $payload->setData($locale, 'aggiornamento', []);
+                }
             }
-        }
 
-        if ($payload->hasData('referente', 'ita-IT')) {
-            $payload->unSetData('referente', 'ita-IT');
-        }
+            if ($payload->hasData('licenza', $locale)) {
+                $data = $payload->getData('licenza', $locale);
+                if (SyncTrasparenzaTool::isEmpty($data)) {
+                    $payload->setData($locale, 'licenza', []);
+                }
+            }
 
-        if ($payload->hasData('termine_pubblicazione', 'ita-IT')) {
-            $data = $payload->getData('termine_pubblicazione', 'ita-IT');
-            if (SyncTrasparenzaTool::isEmpty($data)) {
-                $payload->setData('ita-IT', 'termine_pubblicazione', array());
+            if ($payload->hasData('referente', $locale)) {
+                $payload->unSetData('referente', $locale);
+            }
+
+            if ($payload->hasData('termine_pubblicazione', $locale)) {
+                $data = $payload->getData('termine_pubblicazione', $locale);
+                if (SyncTrasparenzaTool::isEmpty($data)) {
+                    $payload->setData($locale, 'termine_pubblicazione', []);
+                }
             }
         }
 
