@@ -456,14 +456,41 @@ class ObjectHandlerServiceTrasparenza extends ObjectHandlerServiceBase
             $classRepository = new ClassRepository();
             $class = (array)$classRepository->load($classIdentifier);
 
+            $locale = eZINI::instance()->variable('RegionalSettings', 'Locale');
             $classFields = array();
-            foreach ($identifiers as $identifier) {
+            foreach ($identifiers as $index => $identifier) {
+                $customTitle = null;
+                if (strpos($identifier, '#') !== false) {
+                    $identifierAndCustomTitle = explode('#', $identifier);
+                    $identifier = $identifierAndCustomTitle[0];
+                    $customTitle = $identifierAndCustomTitle[1];
+                }
                 $identifierParts = explode('.', $identifier);
+                $showLink = false;
+                if (strpos($identifierParts[0], '*') !== false) {
+                    $showLink = true;
+                    $identifierParts[0] = str_replace('*', '', $identifierParts[0]);
+                }
                 foreach ($class['fields'] as $field) {
                     if ($field['identifier'] == $identifierParts[0]) {
+                        $fieldTitle = $field['name'][$locale];
                         if ($field['dataType'] == 'ezmatrix' && isset($identifierParts[1])) {
                             $field['matrix_column'] = $identifierParts[1];
+                            foreach ($field['template'][0][0] as $columnIdentifier => $columnName) {
+                                if ($columnIdentifier === $field['matrix_column']){
+                                    $fieldTitle = $fieldTitle . ' ' . str_replace('string (', '(', $columnName);
+                                }
+                            }
                         }
+                        $field['column'] = json_encode([
+                            'data' => "data.{$locale}.{$field['identifier']}",
+                            'name' => $field['identifier'],
+                            'title' => $customTitle ?? $fieldTitle,
+                            'searchable' => $field['isSearchable'] && $field['dataType'] !== eZMatrixType::DATA_TYPE_STRING,
+                            'orderable' => $field['isSearchable'] && $field['dataType'] !== eZMatrixType::DATA_TYPE_STRING,
+                        ]);
+                        $field['showLink'] = $index === 0 || $showLink;
+                        $field['inputValue'] = $identifier;
                         $classFields[] = $field;
                     }
                 }
